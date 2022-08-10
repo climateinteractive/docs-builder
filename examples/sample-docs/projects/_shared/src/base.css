@@ -1,0 +1,568 @@
+/* Dark sidebar theme */
+/* :root {
+  --sidebar-bg-color: #343131;
+  --sidebar-page-link-color-normal: #d9d9d9;
+  --sidebar-page-link-bg-color-hover: #4e4a4a;
+  --sidebar-page-link-bg-color-active: #2980b9;
+  --sidebar-page-link-color-active: #fff;
+  --sidebar-footer-title-color: #888;
+  --sidebar-footer-link-color: #ddd;
+} */
+
+/* Light sidebar theme */
+:root {
+  --sidebar-bg-color: #ddd;
+  --sidebar-page-link-color-normal: #404040;
+  --sidebar-page-link-bg-color-hover: #ccc;
+  --sidebar-page-link-bg-color-active: #90a5b3;
+  --sidebar-page-link-color-active: #fff;
+  --sidebar-section-link-bg-color: #f7f7f7;
+  --sidebar-section-link-color: #555;
+  --sidebar-section-link-bg-color-hover: #f1f1f1;
+  --sidebar-footer-bg-color: #ccc;
+  --sidebar-footer-title-color: #777;
+  --sidebar-footer-link-color: #555;
+  --sidebar-footer-link-hover-color: #000;
+}
+
+/* https://www.codeinwp.com/snippets/make-div-100-height-of-browser-window/ */
+html {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: row;
+  margin: 0;
+  height: 100%;
+  flex-grow: 1;
+  color: #404040;
+  font-family: Roboto;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  overflow: hidden;
+}
+
+h1 {
+  line-height: 1.1;
+}
+
+h2,
+h3 {
+  line-height: 1;
+}
+
+a {
+  color: #2980b9;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #3091d1;
+}
+
+a:visited {
+  color: #2980b9;
+}
+
+mark {
+  color: inherit;
+}
+
+sup {
+  position: relative;
+  vertical-align: baseline;
+  font-size: 90%;
+  line-height: 0;
+  top: -0.4em;
+}
+
+sub {
+  position: relative;
+  vertical-align: baseline;
+  font-size: 80%;
+  line-height: 0;
+  bottom: -0.25em;
+}
+
+ul {
+  padding-left: 28px;
+}
+
+table {
+  border-collapse: collapse;
+  font-size: 90%;
+}
+
+table,
+th,
+td {
+  border: 1px solid #e1e4e5;
+}
+
+th,
+td {
+  padding: 8px 10px;
+}
+
+tbody tr:nth-child(odd) {
+  background: #f3f3f3;
+}
+
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  background-color: #e1e4e5;
+  margin: 24px 0;
+  padding: 0;
+}
+
+/*
+ * Heading links
+ */
+
+h1 .heading-link,
+h2 .heading-link,
+h3 .heading-link,
+h4 .heading-link {
+  visibility: hidden;
+}
+
+h1:hover .heading-link,
+h2:hover .heading-link,
+h3:hover .heading-link,
+h4:hover .heading-link {
+  visibility: visible;
+}
+
+.heading-link {
+  margin-left: 4px;
+}
+
+/*
+ * Glossary tooltips
+ */
+
+.glossary-link {
+  position: relative;
+  display: inline;
+  color: unset;
+  text-decoration: underline dashed;
+  text-underline-offset: 0.2em;
+}
+
+.glossary-link:hover,
+.glossary-link:visited {
+  color: unset;
+}
+
+.glossary-link .tooltip {
+  visibility: hidden;
+  position: absolute;
+  display: inline-table;
+  z-index: 100;
+  width: max-content;
+  min-width: 50px;
+  max-width: 280px;
+  top: 150%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px;
+  border-radius: 6px;
+  background-color: black;
+  color: #fff;
+  text-align: left;
+  font-weight: 400;
+}
+
+.glossary-link .tooltip-arrow {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+
+.glossary-link:hover .tooltip {
+  visibility: visible;
+}
+
+/*
+ * Sidebar
+ */
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  height: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: var(--sidebar-bg-color);
+}
+
+.sidebar-scroll-container {
+  padding-bottom: 16px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.sidebar-logo-container {
+  display: flex;
+  padding: 20px 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-logo {
+  width: 230px;
+}
+
+.sidebar-search-container {
+  display: flex;
+  margin: 4px 16px 30px 16px;
+}
+
+.sidebar-search-input-container {
+  display: flex;
+  position: relative;
+  width: 100%;
+}
+
+.sidebar-search-input-container input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px 30px 6px 12px;
+  border-radius: 10px;
+  border: 1px solid #999;
+  font-size: 14px;
+}
+
+/*
+ * XXX: On iPhone and other mobile devices, prevent browser from zooming in on the page
+ * when the user focuses the search field.  (The browser won't zoom if the font size is
+ * at least 16px.)
+ */
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+  .sidebar-search-input-container input {
+    font-size: 16px;
+  }
+}
+
+/*
+ * Hide the clear search (X) button that Safari includes by default on iOS and macOS
+ * since we provide our own custom one that works on all browsers.
+ */
+input[type='search']::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+.sidebar-search-input-container input:placeholder-shown + button {
+  width: 100%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sidebar-search-input-container button {
+  position: absolute;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  line-height: 18px;
+  height: 18px;
+  font-size: 14px;
+  border-radius: 50%;
+  top: 0;
+  bottom: 0;
+  right: 8px;
+  margin: auto;
+  background: #ccc;
+  color: #fff;
+  padding: 0 0 2px 0;
+  outline: none;
+  cursor: pointer;
+}
+
+.sidebar-page-links a {
+  display: block;
+  color: var(--sidebar-page-link-color-normal);
+  padding: 3px 16px;
+  text-decoration: none;
+  font-size: 90%;
+}
+
+.sidebar-page-links .separator {
+  background-color: #ccc;
+  margin: 10px 16px;
+}
+
+.sidebar-page-links a:hover {
+  background-color: var(--sidebar-page-link-bg-color-hover);
+}
+
+.sidebar-page-links a:active {
+  background-color: var(--sidebar-page-link-bg-color-active);
+  color: var(--sidebar-page-link-color-active);
+}
+
+.sidebar-page-links a.current {
+  background-color: #fff;
+  font-weight: 700;
+}
+
+.sidebar-page-links a.current:active {
+  background-color: var(--sidebar-page-link-bg-color-active);
+  color: var(--sidebar-page-link-color-active);
+}
+
+.sidebar-page-links a.section {
+  display: flex;
+  flex-direction: row;
+  padding-left: 20px;
+  background-color: var(--sidebar-section-link-bg-color);
+  color: var(--sidebar-section-link-color);
+}
+
+.sidebar-page-links a.section .bullet {
+  margin-right: 4px;
+}
+
+.sidebar-page-links a.section:hover {
+  background-color: var(--sidebar-section-link-bg-color-hover);
+}
+
+.sidebar-page-links a.section:active {
+  background-color: var(--sidebar-page-link-bg-color-active);
+  color: var(--sidebar-page-link-color-active);
+}
+
+.sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px 12px 16px;
+  background-color: var(--sidebar-footer-bg-color);
+  font-size: 90%;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.5);
+  clip-path: inset(-8px 0 0 0);
+}
+
+.sidebar-footer-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.sidebar-footer-title {
+  padding-right: 8px;
+  font-size: 0.9em;
+  color: var(--sidebar-footer-title-color);
+}
+
+.sidebar-footer a {
+  padding-right: 8px;
+  color: var(--sidebar-footer-link-color);
+}
+
+.sidebar-footer a:hover {
+  color: var(--sidebar-footer-link-hover-color);
+}
+
+.sidebar-footer a.current {
+  font-weight: 700;
+}
+
+/*
+ * Content
+ */
+
+.content-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+}
+
+.spacer-flex {
+  flex: 1;
+}
+
+.content-nav-header {
+  display: none;
+  flex-direction: row;
+  height: 40px;
+  align-items: center;
+  background-color: #004992;
+}
+
+.content-nav-menu-icon {
+  margin-left: 12px;
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+.content-nav-menu-icon div {
+  width: 24px;
+  height: 4px;
+  margin: 4px 0;
+  background-color: #fff;
+  border-radius: 1px;
+}
+
+.content-nav-header a {
+  color: #fff;
+  font-weight: 700;
+}
+
+.content-nav-header-spacer {
+  width: 48px;
+}
+
+.content-inner-container {
+  flex: 1;
+  padding: 10px 30px 0 30px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.content .table-container {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.search-results-container {
+  display: none;
+  font-size: 85%;
+  line-height: 1.3;
+}
+
+.licensing {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 20px;
+  color: #808080;
+}
+
+.licensing img {
+  width: 40px;
+  height: 40px;
+  margin-right: 4px;
+}
+
+.licensing p {
+  margin: 0;
+  padding-left: 4px;
+  font-size: 0.8em;
+  line-height: 1.3;
+}
+
+/*
+ * Print-optimized layout
+ */
+
+.content-container.complete {
+  padding: 0 30px;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+/*
+ * XXX: Make all images display as block except for the icons in headings;
+ * this is needed to prevent page breaks within images.
+ */
+.content.complete img {
+  display: block;
+}
+.content.complete h1 > img {
+  display: inline;
+}
+
+@media print {
+  div,
+  img,
+  p {
+    page-break-inside: avoid;
+  }
+
+  /*
+   * XXX: Prevent page breaks right after a heading.  Based on:
+   *   https://stackoverflow.com/a/53742871
+   */
+  h1,
+  h2,
+  h3,
+  h4 {
+    page-break-inside: avoid;
+  }
+
+  /*
+   * XXX: Note that we exclude h1 here, because we sometimes use
+   * flexbox for h1 in project.css and this will conflict.  This
+   * probably isn't a problem since h1 headings are likely to only
+   * be used at the top of a page where wrapping isn't an issue.
+   */
+  h2::after,
+  h3::after,
+  h4::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 150px;
+    margin-bottom: -150px;
+  }
+
+  .page-break {
+    page-break-before: always;
+  }
+
+  hr {
+    margin: 0;
+  }
+}
+
+/*
+ * Mobile-optimized layout
+ */
+
+@media screen and (max-width: 700px) {
+  .sidebar {
+    display: none;
+  }
+
+  .responsive-sidebar-visible .sidebar {
+    display: flex;
+  }
+
+  .content-nav-header {
+    display: flex;
+  }
+
+  .responsive-sidebar-visible .content-container {
+    position: fixed;
+    left: 300px;
+    width: 100%;
+  }
+
+  .content-inner-container {
+    margin-top: 0;
+    padding: 0 20px;
+  }
+
+  .responsive-sidebar-visible .heading-link {
+    display: none;
+  }
+}

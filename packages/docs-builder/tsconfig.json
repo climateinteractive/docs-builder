@@ -1,0 +1,25 @@
+// This contains the TypeScript configuration used only for the `builder` script.
+{
+  "compilerOptions": {
+    // Use "commonjs" because this is a Node script and we need `import` statements
+    "module": "commonjs",
+    // Use "es2021" for `replaceAll` (includes "es2015" for for `Map` and `IterableIterator`)
+    "target": "es2021",
+    "esModuleInterop": true,
+    // Enable strict enforcement of `import type`
+    "importsNotUsedAsValues": "error",
+    "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "types": ["node"],
+    // We specify the top-level directory as the root, since TypeScript requires
+    // all referenced files to live underneath the root directory
+    "rootDir": "..",
+    // Make `paths` in the tsconfig files relative to this package directory
+    "baseUrl": ".",
+    // Configure path aliases
+    "paths": {}
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "name": "@climateinteractive/docs-builder",
+  "version": "1.0.0",
+  "files": [
+    "dist/**"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "start": "./scripts/start.mjs",
+    "lint": "eslint src --ext .ts --max-warnings 0",
+    "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --write .",
+    "precommit": "run-s lint prettier:check",
+    "type-check": "tsc --noEmit",
+    "build": "tsup-node"
+  },
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "gettext-parser": "^5.0.0",
+    "glob": "^8.0.3",
+    "lunr": "^2.3.9",
+    "lunr-languages": "^1.9.0",
+    "mark.js": "^8.11.1",
+    "marked": "^4.0.10",
+    "node-html-parser": "^4.1.3",
+    "prettier": "^2.5.1",
+    "ps-tree": "^1.2.0",
+    "puppeteer": "^13.5.2",
+    "rev-hash": "^3.0.0",
+    "semver-compare": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/lunr": "^2.3.4",
+    "@types/marked": "^4.0.1",
+    "@types/node": "^14.14.6"
+  },
+  "author": "Climate Interactive",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/climateinteractive/docs-builder",
+    "directory": "packages/docs-builder"
+  },
+  "bugs": {
+    "url": "https://github.com/climateinteractive/docs-builder/issues"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}

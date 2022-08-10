@@ -1,0 +1,20 @@
+{
+  "version": "22.8.0",
+  "langs": [["de", "22.8.0"]],
+  "formats": ["pdf"],
+  "logo": "images/fern.svg",
+  "defs": ["common.md", "glossary.md"],
+  "pages": [
+    "index.md",
+    "-",
+    "content/page_1.md",
+    "content/page_2.md",
+    "-",
+    "content/appendix.md",
+    "content/glossary.md"
+  ],
+  "untranslated": ["content/appendix.md"],
+  "options": {
+    "warnOnMissingDef": true
+  }
+}

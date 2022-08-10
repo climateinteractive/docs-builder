@@ -1,0 +1,15 @@
+/*
+ * Sidebar
+ */
+
+.sidebar-logo {
+  height: 127px;
+}
+
+/*
+ * Page-specific styles
+ */
+
+.appendix p {
+  color: pink;
+}

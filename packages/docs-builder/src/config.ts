@@ -1,0 +1,83 @@
+// Copyright (c) 2022 Climate Interactive / New Venture Fund
+
+import { readFileSync } from 'fs'
+import { dirname } from 'path'
+
+import type { LangCode } from './types'
+
+export interface LangConfig {
+  /** The two-character code for the language. */
+  code: LangCode
+
+  /** The date-based semantic version of the translation for the language. */
+  version: string
+}
+
+export interface Config {
+  /** The absolute path to the base directory for the documentation project. */
+  baseProjDir: string
+
+  /** The date-based semantic version of the base (English) translation. */
+  version: string
+
+  /** The list of languages with an active translation. */
+  langs: LangConfig[]
+
+  /** The list of formats available for download (e.g., 'pdf'). */
+  formats: string[]
+
+  /** The path to the logo image displayed in the sidebar (relative to the project directory). */
+  logoPath: string
+
+  /** The set of Markdown files containing common string/block definitions. */
+  defs: string[]
+
+  /** The set of Markdown files containing pages to be included. */
+  pages: string[]
+
+  /** The set of Markdown files that are not expected to be translated. */
+  untranslated: string[]
+
+  /** Additional options to control how the pages are generated. */
+  options: { [key: string]: string | boolean }
+}
+
+/**
+ * Read a JSON config file from disk and return a `Config` instance.
+ *
+ * @param configPath The absolute path to the config file.
+ */
+export function readConfigFromFile(configPath: string): Config {
+  // For now, assume that the base directory for the project is the same as the one
+  // containing the config file
+  const baseProjDir = dirname(configPath)
+
+  // TODO: Error handling
+  const raw = readFileSync(configPath, 'utf8')
+  const obj = JSON.parse(raw)
+
+  const langs: LangConfig[] = []
+  if (obj.langs) {
+    for (const lang of obj.langs) {
+      if (!Array.isArray(lang) || lang.length !== 2) {
+        throw new Error('Each "langs" entry must have a lang code and version')
+      }
+      langs.push({
+        code: lang[0],
+        version: lang[1]
+      })
+    }
+  }
+
+  return {
+    baseProjDir,
+    version: obj.version,
+    langs,
+    formats: obj.formats || [],
+    logoPath: obj.logo,
+    defs: obj.defs,
+    pages: obj.pages,
+    untranslated: obj.untranslated || [],
+    options: obj.options || {}
+  }
+}
