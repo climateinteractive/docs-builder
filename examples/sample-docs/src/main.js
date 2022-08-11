@@ -15,14 +15,20 @@ async function main() {
   const baseOutDir = resolvePath(rootDir, 'public')
   prepareOutDir(baseOutDir)
 
-  const projDir = name => resolvePath(rootDir, 'projects', name)
   const outDir = name => resolvePath(baseOutDir, name)
+  const opts = (projName, out) => {
+    return {
+      projDir: resolvePath(rootDir, 'projects', projName),
+      outDir: out,
+      sourceDir: resolvePath(rootDir, 'projects', '_shared', 'src')
+    }
+  }
 
   // Generate the "Sample Guide"
-  await buildDocs(projDir('sample-guide'), outDir('sample-guide'))
+  await buildDocs(opts('sample-guide', outDir('sample-guide')))
 
   // Generate the top-level landing page
-  await buildDocs(projDir('top-level'), baseOutDir)
+  await buildDocs(opts('top-level', baseOutDir))
 
   // Write a timestamp file.  This will be used to trigger a reload of the local
   // dev server only after all files have been written.  (This is better than

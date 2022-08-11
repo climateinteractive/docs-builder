@@ -184,16 +184,18 @@ export function writeHtmlFile(
   templateName: string
 ): void {
   // Prepare the Google Analytics script
-  const analyticsScript = `<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-6304590-2', 'auto');
-  if (window.location.hostname === 'docs.climateinteractive.org') {
-    ga('send', 'pageview')
-  }
-  </script>`
+  // TODO: Only if gaTrackingId is defined
+  // const analyticsScript = `<script>
+  // (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  // (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  // m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  // })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  // ga('create', '${gaTrackingId}', 'auto');
+  // if (window.location.hostname === '${gaEnabledHost}') {
+  //   ga('send', 'pageview')
+  // }
+  // </script>`
+  const analyticsScript = ''
 
   // TODO: Compute the correct relative path without assuming structure of En-ROADS User Guide
   // (which uses a `guide` subdirectory)
@@ -306,7 +308,7 @@ export function writeHtmlFile(
 
   // Build the final HTML file by replacing fields in the template
   const templateFile = `template-${templateName}.html`
-  const templatePath = resolvePath('..', 'projects', '_shared', 'src', templateFile)
+  const templatePath = resolvePath(context.config.sourceDir, templateFile)
   const htmlTemplate = readTextFile(templatePath)
   const html = htmlTemplate.replaceAll(/\${(\w*)}/g, (_substring, id) => {
     switch (id) {
@@ -468,16 +470,16 @@ export function writeCompleteHtmlFile(
  * Write an HTML file that shows the given error.  This is only used for local development
  * builds to make it more obvious that an error occurred somewhere in the build process.
  *
- * @param outDir The absolute path to the output directory.
+ * @param context The language-specific context.
  * @param mdRelPath The relative path of the Markdown file for which HTML is being generated.
  * @param error The error to display.
  */
-export function writeErrorHtmlFile(outDir: string, mdRelPath: string, error: Error): void {
+export function writeErrorHtmlFile(context: Context, mdRelPath: string, error: Error): void {
   const htmlRelPath = mdRelPath.replace(/\.md$/, '.html')
 
   // Build the final HTML file by replacing fields in the template
   const templateFile = 'template-error.html'
-  const templatePath = resolvePath('..', 'projects', '_shared', 'src', templateFile)
+  const templatePath = resolvePath(context.config.sourceDir, templateFile)
   const htmlTemplate = readTextFile(templatePath)
   const html = htmlTemplate.replaceAll(/\${(\w*)}/g, (_substring, id) => {
     switch (id) {
@@ -491,7 +493,7 @@ export function writeErrorHtmlFile(outDir: string, mdRelPath: string, error: Err
   })
 
   // Write the HTML file
-  const htmlPath = resolvePath(outDir, htmlRelPath)
+  const htmlPath = resolvePath(context.outDir, htmlRelPath)
   writeOutputFile(htmlPath, html)
 }
 

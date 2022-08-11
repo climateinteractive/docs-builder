@@ -21,19 +21,31 @@ import type { HtmlPage, MarkdownPage } from './types'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
+export interface BuildOptions {
+  /** The absolute path to the directory containing the documentation project files. */
+  projDir: string
+
+  /** The absolute path to the directory that will contain the generated files. */
+  outDir: string
+
+  /** The absolute path to the directory containing source/template files for the project. */
+  sourceDir: string
+}
+
 /**
  * Generate HTML documentation for the given project.
  *
- * @param projDir The absolute path to the directory containing the documentation project files.
- * @param outDir The absolute path to the directory that will contain the generated files.
+ * @param options The build options.
  */
-export async function buildDocs(projDir: string, outDir: string): Promise<void> {
+export async function buildDocs(options: BuildOptions): Promise<void> {
   // Read the config from a file
-  const configFile = resolvePath(projDir, '.config.json')
-  const config = readConfigFromFile(configFile)
+  const configFile = resolvePath(options.projDir, '.config.json')
+  // TODO: Include a `sourceDir` property in the config that is relative to
+  // the project directory
+  const config = readConfigFromFile(configFile, options.sourceDir)
 
   // Create the context that holds scopes and blocks
-  const enContext = new Context(config, outDir, 'en')
+  const enContext = new Context(config, options.outDir, 'en')
 
   try {
     // Read common string definitions
@@ -223,12 +235,9 @@ async function buildLang(context: Context, langConfig: LangConfig): Promise<void
   const indexName = `search_index_${context.lang}.js`
   assets.writeWithHash(indexJs, indexName, context.outDir)
 
-  // XXX: This is a temporary way of detecting the top-level landing page
-  const templateName = context.config.pages.length === 1 ? 'simple' : 'default'
-
   // Write HTML pages
   for (const htmlPage of htmlPages) {
-    writeHtmlFile(context, assets, htmlPage, templateName)
+    writeHtmlFile(context, assets, htmlPage, context.config.template)
   }
 
   // Write PDF if included in configuration, and only for production builds (not in
@@ -312,7 +321,7 @@ function handleError(enContext: Context, error: Error): void {
       prepareOutDir(context.outDir)
       for (const mdPagePath of context.config.pages) {
         if (mdPagePath !== '-') {
-          writeErrorHtmlFile(context.outDir, mdPagePath, error)
+          writeErrorHtmlFile(context, mdPagePath, error)
         }
       }
     }

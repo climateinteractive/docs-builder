@@ -17,6 +17,9 @@ export interface Config {
   /** The absolute path to the base directory for the documentation project. */
   baseProjDir: string
 
+  /** The absolute path to the directory containing source/template files for the project. */
+  sourceDir: string
+
   /** The date-based semantic version of the base (English) translation. */
   version: string
 
@@ -25,6 +28,9 @@ export interface Config {
 
   /** The list of formats available for download (e.g., 'pdf'). */
   formats: string[]
+
+  /** The name of the HTML template to use. */
+  template: string
 
   /** The path to the logo image displayed in the sidebar (relative to the project directory). */
   logoPath: string
@@ -46,8 +52,9 @@ export interface Config {
  * Read a JSON config file from disk and return a `Config` instance.
  *
  * @param configPath The absolute path to the config file.
+ * @param sourceDir The absolute path to the directory containing source/template files for the project.
  */
-export function readConfigFromFile(configPath: string): Config {
+export function readConfigFromFile(configPath: string, sourceDir: string): Config {
   // For now, assume that the base directory for the project is the same as the one
   // containing the config file
   const baseProjDir = dirname(configPath)
@@ -71,9 +78,11 @@ export function readConfigFromFile(configPath: string): Config {
 
   return {
     baseProjDir,
+    sourceDir,
     version: obj.version,
     langs,
     formats: obj.formats || [],
+    template: obj.template || 'default',
     logoPath: obj.logo,
     defs: obj.defs,
     pages: obj.pages,
