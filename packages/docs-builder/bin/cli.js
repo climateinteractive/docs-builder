@@ -3,8 +3,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
+import liveServer from '@compodoc/live-server'
 import chokidar from 'chokidar'
-import liveServer from 'live-server'
 
 import { buildDocs, prepareOutDir, writeOutputFile } from '../dist/index.js'
 
