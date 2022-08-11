@@ -32,7 +32,7 @@ npm install
 
 # Run `docs-builder` in development mode; this will start a local server
 # and will open the generated docs in your browser
-npm dev
+npm run dev
 ```
 
 ## License

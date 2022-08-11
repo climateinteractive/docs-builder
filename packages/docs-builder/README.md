@@ -23,8 +23,8 @@ so you will first need to add the following line to your `.npmrc` file:
 
 Once the `.npmrc` file is updated, you can install the package the usual way:
 
-```
-$ npm install @climateinteractive/docs-builder
+```sh
+npm install @climateinteractive/docs-builder
 ```
 
 ## Usage
@@ -34,12 +34,12 @@ $ npm install @climateinteractive/docs-builder
 ```sh
 # Build the docs (in the `projects` directory) and output
 # to the `public` directory
-$ docs-builder
+npx docs-builder
 
 # Or, enable development mode, which runs the builder in
 # watch mode and starts a local development server so that
 # you can see your docs in the browser immediately
-$ docs-builder dev
+npx docs-builder dev
 ```
 
 ### API
