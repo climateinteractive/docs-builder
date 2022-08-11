@@ -24,7 +24,7 @@ msgid "pdf_table_of_contents"
 msgstr "Inhaltsverzeichnis"
 
 msgid "content_placeholder"
-msgstr "Lorem ipsum auf Deutsch"
+msgstr "Dieser Text wurde in `common.md` definiert."
 
 msgid "github_project"
 msgstr "Diese Seite wurde von [`docs-builder`](https://github.com/climateinteractive/docs-builder) erstellt."
@@ -60,7 +60,25 @@ msgid "page_1__intro"
 msgstr "Dies ist die erste [Seite][glossary_page]."
 
 msgid "page_1__examples__example_1"
-msgstr "(TODO: Deutsch) This sentence refers to a footnote. footnote-ref:example_1"
+msgstr ""
+"Dies ist ein Satz mit __fettem__ und _kursivem_ Text.\n"
+"\n"
+"(TODO: Deutsch) This block has two paragraphs that are captured using a `begin-def` / `end-def` pair."
+
+msgid "page_1__examples__hidden_text"
+msgstr "dieser Text wurde mit \"hidden\" Flag definiert"
+
+msgid "page_1__examples__example_2"
+msgstr "(TODO: Deutsch) Use `def[hidden]` to define some text without making it appear, then \"use\" it later on the page (like this: _:page_1__examples__hidden_text:_)."
+
+msgid "page_1__examples__example_3"
+msgstr "Dieser Satz bezieht sich auf eine Fußnote. footnote-ref:fn_example"
+
+msgid "page_1__examples__header_person"
+msgstr "Person"
+
+msgid "page_1__examples__header_age"
+msgstr "Alter"
 
 msgid "page_2__title"
 msgstr "Seite 2"
@@ -69,4 +87,4 @@ msgid "page_2__intro"
 msgstr ""
 "Dies ist die zweite [Seite][glossary_page].\n"
 "\n"
-"(TODO: Deutsch) This intro has two paragraphs that are captured using a `begin-def` / `end-def` pair."
+"(TODO: Deutsch) This block has two paragraphs that are captured using a `begin-def` / `end-def` pair."
