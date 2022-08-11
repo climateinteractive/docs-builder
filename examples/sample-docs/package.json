@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "clean": "rm -rf public",
-    "build": "node src/main.js",
+    "build": "docs-builder",
+    "dev": "docs-builder dev",
     "ci:build": "run-s clean build"
   },
   "devDependencies": {

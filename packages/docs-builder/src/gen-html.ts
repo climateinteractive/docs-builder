@@ -183,9 +183,14 @@ export function writeHtmlFile(
   htmlPage: HtmlPage,
   templateName: string
 ): void {
-  // TODO: Compute the correct relative path without assuming structure of En-ROADS User Guide
-  // (which uses a `guide` subdirectory)
-  const basePath = htmlPage.relPath.startsWith('guide') ? '..' : '.'
+  // TODO: This is a hacky way of computing the relative path; need to clean this up
+  let basePath: string
+  const slashCount = (htmlPage.relPath.match(/\//g) || []).length
+  if (slashCount === 0) {
+    basePath = '.'
+  } else {
+    basePath = Array(slashCount).fill('..').join('/')
+  }
   const searchIndexName = `search_index_${context.lang}.js`
 
   // // If Lunr has an optimized stemmer for the configured language, include the

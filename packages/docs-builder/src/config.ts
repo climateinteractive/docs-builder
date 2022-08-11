@@ -1,7 +1,7 @@
 // Copyright (c) 2022 Climate Interactive / New Venture Fund
 
 import { readFileSync } from 'fs'
-import { dirname } from 'path'
+import { dirname, resolve as resolvePath } from 'path'
 
 import type { LangCode } from './types'
 
@@ -19,6 +19,9 @@ export interface Config {
 
   /** The absolute path to the directory containing source/template files for the project. */
   sourceDir: string
+
+  /** The absolute path to the output directory for the project. */
+  outDir: string
 
   /** The date-based semantic version of the base (English) translation. */
   version: string
@@ -63,6 +66,14 @@ export function readConfigFromFile(configPath: string, sourceDir: string): Confi
   const raw = readFileSync(configPath, 'utf8')
   const obj = JSON.parse(raw)
 
+  const publicDir = resolvePath(process.cwd(), 'public')
+  let outDir: string
+  if (obj.out) {
+    outDir = resolvePath(publicDir, obj.out)
+  } else {
+    outDir = publicDir
+  }
+
   const langs: LangConfig[] = []
   if (obj.langs) {
     for (const lang of obj.langs) {
@@ -79,6 +90,7 @@ export function readConfigFromFile(configPath: string, sourceDir: string): Confi
   return {
     baseProjDir,
     sourceDir,
+    outDir,
     version: obj.version,
     langs,
     formats: obj.formats || [],

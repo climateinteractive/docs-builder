@@ -2,6 +2,7 @@
   "name": "@climateinteractive/docs-builder",
   "version": "1.0.0",
   "files": [
+    "bin/**",
     "dist/**"
   ],
   "type": "module",
@@ -14,6 +15,9 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     }
+  },
+  "bin": {
+    "docs-builder": "./bin/cli.js"
   },
   "scripts": {
     "clean": "rm -rf dist",
@@ -30,6 +34,7 @@
     "find-up": "^6.3.0",
     "gettext-parser": "^5.0.0",
     "glob": "^8.0.3",
+    "live-server": "^1.2.2",
     "lunr": "^2.3.9",
     "lunr-languages": "^1.9.0",
     "mark.js": "^8.11.1",

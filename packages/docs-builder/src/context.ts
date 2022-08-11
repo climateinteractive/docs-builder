@@ -26,7 +26,6 @@ export class Context {
 
   constructor(
     public readonly config: Config,
-    public readonly baseOutDir: string,
     public readonly lang: LangCode,
     public readonly blocks: Map<BlockId, Block> = new Map(),
     public readonly translatedBlocks: Map<BlockId, string> = new Map()
@@ -34,7 +33,7 @@ export class Context {
     // Note: This path structure (e.g., `projects/en-roads/en/latest`) is the same as the structure
     // used by ReadTheDocs.  It isn't the most ideal structure, but we are leaving it as is for now
     // to avoid breaking links to the previous docs hosted on ReadTheDocs.
-    this.outDir = resolvePath(baseOutDir, lang, 'latest')
+    this.outDir = resolvePath(config.outDir, lang, 'latest')
     this.toc = new Toc()
     this.searchIndex = new SearchIndex(lang)
   }
@@ -44,7 +43,7 @@ export class Context {
    * the given translated strings for another language.
    */
   derive(lang: LangCode, translatedBlocks: Map<BlockId, string>): Context {
-    return new Context(this.config, this.baseOutDir, lang, this.blocks, translatedBlocks)
+    return new Context(this.config, lang, this.blocks, translatedBlocks)
   }
 
   /**

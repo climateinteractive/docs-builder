@@ -25,9 +25,6 @@ export interface BuildOptions {
   /** The absolute path to the directory containing the documentation project files. */
   projDir: string
 
-  /** The absolute path to the directory that will contain the generated files. */
-  outDir: string
-
   /** The absolute path to the directory containing source/template files for the project. */
   sourceDir: string
 }
@@ -45,7 +42,7 @@ export async function buildDocs(options: BuildOptions): Promise<void> {
   const config = readConfigFromFile(configFile, options.sourceDir)
 
   // Create the context that holds scopes and blocks
-  const enContext = new Context(config, options.outDir, 'en')
+  const enContext = new Context(config, 'en')
 
   try {
     // Read common string definitions
