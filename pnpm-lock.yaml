@@ -24,6 +24,12 @@ importers:
       tsup: 6.2.1_typescript@4.7.4
       typescript: 4.7.4
 
+  examples/sample-docs:
+    specifiers:
+      '@climateinteractive/docs-builder': ^1.0.0
+    devDependencies:
+      '@climateinteractive/docs-builder': link:../../packages/docs-builder
+
   packages/docs-builder:
     specifiers:
       '@types/lunr': ^2.3.4
