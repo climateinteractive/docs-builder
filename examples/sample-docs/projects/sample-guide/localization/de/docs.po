@@ -54,7 +54,7 @@ msgid "index__developed_by"
 msgstr "Das `docs-builder` Tool wird von [Climate Interactive][ci] entwickelt."
 
 msgid "page_1__title"
-msgstr "Page 1"
+msgstr "Seite 1"
 
 msgid "page_1__intro"
 msgstr "Dies ist die erste [Seite][glossary_page]."
@@ -63,7 +63,7 @@ msgid "page_1__examples__example_1"
 msgstr "(TODO: Deutsch) This sentence refers to a footnote. footnote-ref:example_1"
 
 msgid "page_2__title"
-msgstr "Page 2"
+msgstr "Seite 2"
 
 msgid "page_2__intro"
 msgstr ""
