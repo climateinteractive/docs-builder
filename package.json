@@ -8,6 +8,8 @@
     "prettier:fix": "pnpm -r prettier:fix",
     "precommit": "pnpm -r precommit",
     "build": "pnpm -r --workspace-concurrency=1 build",
+    "sample:build": "pnpm build",
+    "sample:dev": "pnpm -F \"*-builder\" build && pnpm -F sample-docs dev",
     "ci-build": "./scripts/ci-build"
   },
   "devDependencies": {
