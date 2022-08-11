@@ -423,6 +423,9 @@ function processToken(context: Context, state: ProcessState, token: marked.Token
       case 'hr':
         // No text or child tokens to process
         break
+      case 'codespan':
+        // TODO: Any special handling here?
+        break
       default:
         throw new Error(`Unhandled token type ${token.type}`)
     }
