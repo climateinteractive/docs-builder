@@ -1,10 +1,10 @@
 // This contains the TypeScript configuration used only for the `builder` script.
 {
   "compilerOptions": {
-    // Use "commonjs" because this is a Node script and we need `import` statements
-    "module": "commonjs",
     // Use "es2021" for `replaceAll` (includes "es2015" for for `Map` and `IterableIterator`)
     "target": "es2021",
+    // Use "es2020" because this is a Node module (using ESM)
+    "module": "es2020",
     "esModuleInterop": true,
     // Enable strict enforcement of `import type`
     "importsNotUsedAsValues": "error",

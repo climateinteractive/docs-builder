@@ -1,6 +1,9 @@
 // Copyright (c) 2022 Climate Interactive / New Venture Fund
 
-import { resolve as resolvePath } from 'path'
+import { dirname, join as joinPath, resolve as resolvePath } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+import { findUp, pathExists } from 'find-up'
 import glob from 'glob'
 import semverCompare from 'semver-compare'
 
@@ -14,6 +17,9 @@ import { writePdfFile } from './gen-pdf'
 import { parseMarkdownPage } from './parse'
 import { readPoFile, writeBasePoFile } from './translation'
 import type { HtmlPage, MarkdownPage } from './types'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 /**
  * Generate HTML documentation for the given project.
@@ -121,10 +127,24 @@ async function buildLang(context: Context, langConfig: LangConfig): Promise<void
   // structure for each language makes it easier to provide language-specific assets
   // that override the default (English) assets.
   const assets = new Assets()
-  const copySharedAssets = () => {
-    const sharedSrcDir = resolvePath('..', 'projects', '_shared', 'src')
-    const nodeModulesDir = resolvePath('..', 'node_modules')
-    const moduleDir = (...names: string[]) => resolvePath(nodeModulesDir, ...names)
+  const copySharedAssets = async () => {
+    // TODO: For now we assume there is a `_shared` directory at the same level as
+    // the project directory and that it contains all of the following files.  We
+    // should make this more customizable.
+    const sharedSrcDir = resolvePath(context.config.baseProjDir, '..', '_shared', 'src')
+    const moduleDir = async (pkgName: string, ...subpaths: string[]) => {
+      // Walk up the directory structure to find the package installed in the nearest
+      // `node_modules` directory
+      const nodeModulesParentDir = await findUp(
+        async dir => {
+          const hasPkg = await pathExists(joinPath(dir, 'node_modules', pkgName))
+          return hasPkg && dir
+        },
+        { cwd: __dirname, type: 'directory' }
+      )
+      const pkgDir = joinPath(nodeModulesParentDir, 'node_modules', pkgName)
+      return resolvePath(pkgDir, ...subpaths)
+    }
     const copyToBase = (srcDir: string, srcName: string) => {
       assets.copyWithHash(srcDir, srcName, context.outDir)
     }
@@ -133,13 +153,13 @@ async function buildLang(context: Context, langConfig: LangConfig): Promise<void
     copyToBase(sharedSrcDir, 'favicon.ico')
     copyToBase(sharedSrcDir, 'cc_cc.svg')
     copyToBase(sharedSrcDir, 'cc_by.svg')
-    copyToBase(moduleDir('lunr'), 'lunr.min.js')
-    copyToBase(moduleDir('lunr-languages'), 'lunr.stemmer.support.js')
-    copyToBase(moduleDir('mark.js', 'dist'), 'mark.min.js')
+    copyToBase(await moduleDir('lunr'), 'lunr.min.js')
+    copyToBase(await moduleDir('lunr-languages'), 'lunr.stemmer.support.js')
+    copyToBase(await moduleDir('mark.js', 'dist'), 'mark.min.js')
     copyToBase(sharedSrcDir, 'search.js')
     copyToBase(sharedSrcDir, 'support.js')
   }
-  copySharedAssets()
+  await copySharedAssets()
 
   // Copy the project-specific images.  First copy the base (English) images to
   // the language-specific output directory, then overwrite any language-specific

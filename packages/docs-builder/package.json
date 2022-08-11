@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "chokidar": "^3.5.3",
+    "find-up": "^6.3.0",
     "gettext-parser": "^5.0.0",
     "glob": "^8.0.3",
     "lunr": "^2.3.9",
