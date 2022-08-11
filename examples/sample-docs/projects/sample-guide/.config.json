@@ -3,7 +3,7 @@
   "langs": [["de", "22.8.0"]],
   "formats": ["pdf"],
   "logo": "images/fern.svg",
-  "defs": ["common.md", "glossary.md"],
+  "defs": ["common.md", "content/glossary.md"],
   "pages": [
     "index.md",
     "-",

@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "clean": "rm -rf public",
-    "build": "echo TODO",
-    "dev": "echo TODO",
+    "build": "node src/main.js",
     "ci:build": "run-s clean build"
   },
   "devDependencies": {
