@@ -8,7 +8,7 @@ import glob from 'glob'
 import semverCompare from 'semver-compare'
 
 import { Assets } from './assets'
-import type { LangConfig } from './config'
+import type { BuildMode, LangConfig } from './config'
 import { readConfigFromFile } from './config'
 import { Context } from './context'
 import { prepareOutDir, readTextFile, writeOutputFile } from './fs'
@@ -22,6 +22,9 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 export interface BuildOptions {
+  /** The build mode, either 'production' or 'development'. */
+  mode: BuildMode
+
   /** The absolute path to the directory containing the documentation project files. */
   projDir: string
 
@@ -39,7 +42,7 @@ export async function buildDocs(options: BuildOptions): Promise<void> {
   const configFile = resolvePath(options.projDir, '.config.json')
   // TODO: Include a `sourceDir` property in the config that is relative to
   // the project directory
-  const config = readConfigFromFile(configFile, options.sourceDir)
+  const config = readConfigFromFile(configFile, options.sourceDir, options.mode)
 
   // Create the context that holds scopes and blocks
   const enContext = new Context(config, 'en')
@@ -239,8 +242,7 @@ async function buildLang(context: Context, langConfig: LangConfig): Promise<void
 
   // Write PDF if included in configuration, and only for production builds (not in
   // local dev mode)
-  const productionBuild = process.env.DEV_MODE !== '1'
-  if (productionBuild && context.config.formats.includes('pdf')) {
+  if (context.config.mode === 'production' && context.config.formats.includes('pdf')) {
     // Write the HTML file that contains all pages (used for generating the PDF)
     writeCompleteHtmlFile(context, assets, htmlPages)
 
@@ -303,7 +305,7 @@ function writeSavedMarkdownContent(context: Context, mdPages: Map<string, Markdo
  * @param error The error that occurred.
  */
 function handleError(enContext: Context, error: Error): void {
-  if (process.env.DEV_MODE === '1') {
+  if (enContext.config.mode === 'development') {
     // In local development mode, log the error and also write the error to the
     // destination HTML files so that it appears in the browser
     console.error(error)

@@ -5,6 +5,8 @@ import { dirname, resolve as resolvePath } from 'path'
 
 import type { LangCode } from './types'
 
+export type BuildMode = 'production' | 'development'
+
 export interface LangConfig {
   /** The two-character code for the language. */
   code: LangCode
@@ -14,6 +16,9 @@ export interface LangConfig {
 }
 
 export interface Config {
+  /** The build mode, either 'production' or 'development'. */
+  mode: BuildMode
+
   /** The absolute path to the base directory for the documentation project. */
   baseProjDir: string
 
@@ -60,7 +65,7 @@ export interface Config {
  * @param configPath The absolute path to the config file.
  * @param sourceDir The absolute path to the directory containing source/template files for the project.
  */
-export function readConfigFromFile(configPath: string, sourceDir: string): Config {
+export function readConfigFromFile(configPath: string, sourceDir: string, mode: BuildMode): Config {
   // For now, assume that the base directory for the project is the same as the one
   // containing the config file
   const baseProjDir = dirname(configPath)
@@ -91,6 +96,7 @@ export function readConfigFromFile(configPath: string, sourceDir: string): Confi
   }
 
   return {
+    mode,
     baseProjDir,
     sourceDir,
     outDir,

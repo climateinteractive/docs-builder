@@ -8,13 +8,13 @@ import liveServer from 'live-server'
 
 import { buildDocs, prepareOutDir, writeOutputFile } from '../dist/index.js'
 
-async function build(initial) {
+async function build(opts) {
   // TODO: For now assume the current directory is the root; make this configurable
   const rootDir = process.cwd()
   const projectsDir = path.resolve(rootDir, 'projects')
   const baseOutDir = path.resolve(rootDir, 'public')
 
-  if (initial) {
+  if (opts.initial) {
     // Create the base output directory (this will remove the directory first if it
     // already exists)
     prepareOutDir(baseOutDir)
@@ -39,6 +39,7 @@ async function build(initial) {
   // Generate docs for each project
   for (const projDir of projDirs) {
     await buildDocs({
+      mode: opts.mode,
       projDir,
       sourceDir
     })
@@ -71,7 +72,10 @@ function watch() {
 
     // Restart the build processes
     console.log('Starting builder processes')
-    build(false)
+    build({
+      mode: 'development',
+      initial: false
+    })
   }
 
   function scheduleRebuild(changedPath) {
@@ -120,7 +124,10 @@ async function main() {
   if (args.length === 1 && args[0] === 'dev') {
     // Enable development mode; build once before starting the local server
     console.log('\nPerforming initial build...')
-    await build(true)
+    await build({
+      mode: 'development',
+      initial: true
+    })
     console.log('Done with initial build!')
 
     // Set up a file watcher so that we rebuild any time a source file is changed
@@ -136,7 +143,10 @@ async function main() {
     })
   } else {
     // Build once
-    await build(true)
+    await build({
+      mode: 'production',
+      initial: true
+    })
   }
 }
 
