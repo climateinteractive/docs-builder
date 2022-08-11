@@ -1,0 +1,35 @@
+{
+  "name": "docs-builder-monorepo",
+  "private": true,
+  "scripts": {
+    "prepare": "husky install",
+    "lint": "pnpm -r lint",
+    "prettier:check": "pnpm -r prettier:check",
+    "prettier:fix": "pnpm -r prettier:fix",
+    "precommit": "pnpm -r precommit",
+    "build": "pnpm -r --workspace-concurrency=1 build",
+    "sample:build": "pnpm build",
+    "sample:dev": "pnpm -F \"*-builder\" build && pnpm -F sample-docs dev",
+    "ci-build": "./scripts/ci-build"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.14.0",
+    "@typescript-eslint/parser": "^5.14.0",
+    "eslint": "^8.10.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "husky": "^8.0.1",
+    "npm-run-all": "^4.1.5",
+    "tsup": "^6.0.1",
+    "typescript": "^4.7.4"
+  },
+  "author": "Climate Interactive",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/climateinteractive/docs-builder"
+  },
+  "bugs": {
+    "url": "https://github.com/climateinteractive/docs-builder/issues"
+  }
+}

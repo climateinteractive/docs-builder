@@ -1,0 +1,84 @@
+#
+# Builds the packages on Linux.
+#
+# This runs after changes are pushed to a feature branch.  It does not
+# run for pushes to the main branch because that is covered by the
+# `release` workflow.
+#
+
+name: Build
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v2
+        with:
+          # XXX: Fetch history for all branches; we really only need the history
+          # for the base (main) branch in the `sim-slack` script, so this is
+          # inefficient but simple
+          fetch-depth: 0
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      # The pnpm caching strategy in the following steps is based on:
+      #   https://github.com/pnpm/action-setup#use-cache-to-reduce-installation-time
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+
+      - name: Enable pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-store-${{ runner.os }}-
+
+      # Save the auth token so that the build can access private packages from
+      # the GitHub Packages registry
+      - name: Configure npm auth tokens
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_ACCESS_TOKEN }}" > ~/.npmrc
+
+      - name: Install dependencies
+        run: |
+          pnpm install
+
+      - name: Build
+        id: build
+        run: |
+          pnpm ci-build
+
+      # - name: Define CI_NOTIFY environment variables
+      #   if: always()
+      #   run: |
+      #     if [[ "${{steps.build.outcome}}" == "success" ]]; then
+      #       status="succeeded"
+      #     elif [[ "${{steps.build.outcome}}" == "failure" ]]; then
+      #       status="failed"
+      #     else
+      #       status="cancelled"
+      #     fi
+      #     echo "CI_NOTIFY_BUILD_STATUS=$status" >> $GITHUB_ENV
+
+      # - name: Notify committer on Slack
+      #   if: always()
+      #   env:
+      #     SLACK_WEBHOOK: '${{ secrets.SLACK_WEBHOOK }}'
+      #   run: |
+      #     node ./packages/sim-scripts/scripts/sim-slack.js

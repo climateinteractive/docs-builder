@@ -1,0 +1,15 @@
+{
+  "name": "sample-docs",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "clean": "rm -rf public",
+    "build": "docs-builder",
+    "dev": "docs-builder dev",
+    "ci:build": "run-s clean build"
+  },
+  "devDependencies": {
+    "@climateinteractive/docs-builder": "^1.0.0"
+  }
+}

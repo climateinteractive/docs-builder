@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="${LANG}">
+
+<head>
+  <title>${PAGE_TITLE}</title>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="icon" href="${FAVICON_PATH}">
+  <link rel="stylesheet" href="${BASE_CSS_PATH}">
+  <link rel="stylesheet" href="${PROJECT_CSS_PATH}">
+
+  <script src="${LUNR_PATH}"></script>
+  <script src="${MARK_PATH}"></script>
+  <script src="${SEARCH_INDEX_JS_PATH}"></script>
+  <script src="${SEARCH_JS_PATH}"></script>
+  <script src="${SUPPORT_JS_PATH}"></script>
+
+  <script>
+    function onSearch(searchTerm) {
+      performSearch(searchTerm, '${BASE_PATH}');
+    }
+
+    window.onload = function () {
+      onWindowLoad();
+    }
+  </script>
+</head>
+
+<body>
+
+<div class="sidebar">
+  <div class="sidebar-scroll-container">
+    <div class="sidebar-logo-container">
+      <a href="${INDEX_PATH}"><img src="${LOGO_PATH}" class="sidebar-logo"/></a>
+    </div>
+    <div class="sidebar-search-container">
+      <form class="sidebar-search-input-container" action="." onsubmit="return false;">
+        <input id="sidebar-search-input" type="search" placeholder="${SEARCH_PLACEHOLDER}" oninput="onSearch(this.value);">
+        <button type="reset" onclick="clearSearch();">&times;</button>
+      </form>
+    </div>
+    <div class="sidebar-page-links">
+${SIDEBAR_LINKS}
+    </div>
+  </div>
+  <div ${SIDEBAR_FOOTER_STYLE} class="sidebar-footer">
+    <div class="sidebar-footer-row">
+      <div class="sidebar-footer-title">${LANG_TITLE}:</div>
+      <div class="sidebar-footer-links">${LANG_LINKS}</div>
+    </div>
+    <div class="sidebar-footer-row">
+      <div class="sidebar-footer-title">${DOWNLOAD_TITLE}:</div>
+      <a href="${PDF_PATH}">PDF</a>
+    </div>
+  </div>
+</div>
+
+<div class="content-container">
+  <div class="content-nav-header">
+    <div class="content-nav-menu-icon" onclick="onMenuButtonClicked();">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <div class="spacer-flex"></div>
+    <a href="${INDEX_PATH}">${TOP_LEVEL_TITLE}</a>
+    <div class="spacer-flex"></div>
+    <div class="content-nav-header-spacer"></div>
+  </div>
+  <div class="content-inner-container">
+    <div class="content ${BASE_NAME}" id="content">
+${BODY}
+    </div>
+    <div class="search-results-container" id="search-results-container">
+      <h2>${SEARCH_RESULTS_TITLE}</h2>
+      <div id="search-results-empty">${SEARCH_RESULTS_EMPTY_MESSAGE}</div>
+      <div id="search-results-content"></div>
+    </div>
+    <footer>
+      <hr/>
+      <div class="licensing">
+        <img src="${CC_CC_SVG_PATH}">
+        <img src="${CC_BY_SVG_PATH}">
+        <p><i>
+        These materials are licensed under a
+        <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+        This license lets you remix, adapt, and build upon Climate Interactive's work, even commercially,
+        as long as you give Climate Interactive credit for the original creation of the materials.
+        </i></p>
+      </div>
+    </footer>
+  </div>
+</div>
+
+</body>
+
+</html>

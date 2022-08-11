@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Error</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+body {
+  padding: 10px 20px;
+  background-color: #000;
+  color: #fff;
+  font-family: monospace;
+}
+
+.error-message {
+  color: red;
+}
+  </style>
+</head>
+
+<body>
+
+<div class="content-container">
+  <div class="content-inner-container">
+    <div class="content" id="content">
+      <p>
+        An error occurred when building the documentation:
+      </p>
+      <p class="error-message">
+${ERROR_MESSAGE}
+      </p>
+      <p class="error-stack">
+${ERROR_STACK}
+      </p>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>

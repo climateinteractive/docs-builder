@@ -1,0 +1,6 @@
+{
+  "packages": {
+    "packages/docs-builder": { "release-as": "1.0.0" }
+  },
+  "pull-request-title-pattern": "chore: release${component} ${version}"
+}

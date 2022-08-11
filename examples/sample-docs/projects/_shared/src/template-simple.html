@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="${LANG}">
+
+<head>
+  <title>${PAGE_TITLE}</title>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="icon" href="${FAVICON_PATH}">
+  <link rel="stylesheet" href="${BASE_CSS_PATH}">
+  <link rel="stylesheet" href="${PROJECT_CSS_PATH}">
+</head>
+
+<body>
+
+<div class="content-container">
+  <div class="content-inner-container">
+    <div class="content ${BASE_NAME}" id="content">
+${BODY}
+    </div>
+    <footer>
+      <hr/>
+      <div class="licensing">
+        <img src="${CC_CC_SVG_PATH}">
+        <img src="${CC_BY_SVG_PATH}">
+        <p><i>
+        These materials are licensed under a
+        <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+        This license lets you remix, adapt, and build upon Climate Interactive's work, even commercially,
+        as long as you give Climate Interactive credit for the original creation of the materials.
+        </i></p>
+      </div>
+    </footer>
+  </div>
+</div>
+
+</body>
+
+</html>
