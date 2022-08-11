@@ -395,7 +395,9 @@ export function writeCompleteHtmlFile(
   let titlePage = ''
   titlePage += `<div style="width: 100%; margin: 420px 0 300px 0;">\n`
   titlePage += `<p style="text-align: center; font-weight: 700; font-size: 3em;">${projTitle}</p>\n`
-  titlePage += `<p style="text-align: center; font-size: 1.5em;">Climate Interactive</p>\n`
+  if (context.config.author) {
+    titlePage += `<p style="text-align: center; font-size: 1.5em;">${context.config.author}</p>\n`
+  }
   titlePage += '</div>'
   addPage('_title', titlePage)
 

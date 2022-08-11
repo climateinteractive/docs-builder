@@ -35,6 +35,9 @@ export interface Config {
   /** The name of the HTML template to use. */
   template: string
 
+  /** The author name (used on the title page of the generated PDF). */
+  author?: string
+
   /** The path to the logo image displayed in the sidebar (relative to the project directory). */
   logoPath: string
 
@@ -95,6 +98,7 @@ export function readConfigFromFile(configPath: string, sourceDir: string): Confi
     langs,
     formats: obj.formats || [],
     template: obj.template || 'default',
+    author: obj.author,
     logoPath: obj.logo,
     defs: obj.defs,
     pages: obj.pages,
