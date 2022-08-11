@@ -2,8 +2,8 @@
 
 # <!-- section:index --><!-- def:title -->Sample Documentation
 
-This is the top-level index page for this sample documentation project, which is used to demonstrate the `@climateinteractive/docs-builder` tool.
+This is the top-level index page for this sample documentation project, which is used to demonstrate the `docs-builder` tool.
 
-## [Sample Guide](../../projects/sample-guide/en/latest/index.html)
+## [Sample Guide](../../sample-guide/en/latest/index.html)
 
-The [Sample Guide](../../projects/sample-guide/en/latest/index.html) demonstrates a project that is nested under this top-level project.
+The [Sample Guide](../../sample-guide/en/latest/index.html) demonstrates a project that is nested under this top-level project.

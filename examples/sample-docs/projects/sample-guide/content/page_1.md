@@ -1,7 +1,7 @@
 # <!-- section:page_1 --><!-- def:title -->Page 1
 
 <!-- def:intro -->
-This is the first [page][glossary:page].
+This is the first [page][glossary_page].
 
 ## <!-- section:examples -->:section_examples:
 

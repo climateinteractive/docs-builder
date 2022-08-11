@@ -2,7 +2,7 @@
 
 <!-- begin-def:intro -->
 
-This is the second page.
+This is the second [page][glossary_page].
 
 This intro has two paragraphs that are captured using a `begin-def` / `end-def` pair.
 

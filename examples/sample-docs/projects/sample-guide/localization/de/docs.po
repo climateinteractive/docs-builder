@@ -27,7 +27,7 @@ msgid "content_placeholder"
 msgstr "Lorem ipsum auf Deutsch"
 
 msgid "github_project"
-msgstr "Diese Seite wurde von [`@climateinteractive/docs-builder`](https://github.com/climateinteractive/docs-builder) erstellt."
+msgstr "Diese Seite wurde von [`docs-builder`](https://github.com/climateinteractive/docs-builder) erstellt."
 
 msgid "appendix__title"
 msgstr "Appendix"
@@ -57,7 +57,7 @@ msgid "page_1__title"
 msgstr "Page 1"
 
 msgid "page_1__intro"
-msgstr "Dies ist die erste [Seite][glossary:page]."
+msgstr "Dies ist die erste [Seite][glossary_page]."
 
 msgid "page_1__examples__example_1"
 msgstr "(TODO: Deutsch) This sentence refers to a footnote. footnote-ref:example_1"
@@ -67,6 +67,6 @@ msgstr "Page 2"
 
 msgid "page_2__intro"
 msgstr ""
-"Dies ist die zweite [Seite][glossary:page].\n"
+"Dies ist die zweite [Seite][glossary_page].\n"
 "\n"
 "(TODO: Deutsch) This intro has two paragraphs that are captured using a `begin-def` / `end-def` pair."
