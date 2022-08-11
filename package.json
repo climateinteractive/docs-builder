@@ -6,7 +6,9 @@
     "lint": "pnpm -r lint",
     "prettier:check": "pnpm -r prettier:check",
     "prettier:fix": "pnpm -r prettier:fix",
-    "precommit": "pnpm -r precommit"
+    "precommit": "pnpm -r precommit",
+    "build": "pnpm -r --workspace-concurrency=1 build",
+    "ci-build": "./scripts/ci-build"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.14.0",

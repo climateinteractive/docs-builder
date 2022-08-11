@@ -16,13 +16,14 @@
     }
   },
   "scripts": {
-    "start": "./scripts/start.mjs",
+    "clean": "rm -rf dist",
     "lint": "eslint src --ext .ts --max-warnings 0",
     "prettier:check": "prettier --check .",
     "prettier:fix": "prettier --write .",
     "precommit": "run-s lint prettier:check",
     "type-check": "tsc --noEmit",
-    "build": "tsup-node"
+    "build": "tsup-node",
+    "ci:build": "run-s clean lint prettier:check type-check build"
   },
   "dependencies": {
     "chokidar": "^3.5.3",
