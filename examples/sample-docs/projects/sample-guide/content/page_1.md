@@ -7,6 +7,7 @@ This is the first [page][glossary:page].
 
 :content_placeholder:
 
+<!-- def:example_1 -->
 This sentence refers to a footnote. footnote-ref:example_1
 
 ## <!-- section:footnotes -->:section_footnotes:

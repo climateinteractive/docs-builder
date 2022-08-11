@@ -59,6 +59,9 @@ msgstr "Page 1"
 msgid "page_1__intro"
 msgstr "This is the first [page][glossary:page]."
 
+msgid "page_1__examples__example_1"
+msgstr "This sentence refers to a footnote. footnote-ref:example_1"
+
 msgid "page_2__title"
 msgstr "Page 2"
 
