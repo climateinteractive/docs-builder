@@ -29,6 +29,14 @@ This sentence refers to a footnote. footnote-ref:fn_example
 | Alice | 42 |
 | Bob | 99 |
 
+
+```js
+// This is a code block
+const one = 1
+const two = 2
+const answer = one + two
+```
+
 ## <!-- section:footnotes -->:section_footnotes:
 
 footnote:fn_example This is a footnote (only in English for now).
