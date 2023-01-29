@@ -91,6 +91,14 @@ ul {
   padding-left: 28px;
 }
 
+pre {
+  font-size: 90%;
+  overflow-x: auto;
+  background-color: #f3f3f3;
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
 table {
   border-collapse: collapse;
   font-size: 90%;

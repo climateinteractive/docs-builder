@@ -314,6 +314,7 @@ export function plainTextFromTokens(tokens: marked.Token[]): string {
       case 'space':
       case 'hr':
       case 'escape':
+      case 'code':
         break
       default:
         throw new Error(`Unhandled token type ${token.type}`)
@@ -421,6 +422,7 @@ function processToken(context: Context, state: ProcessState, token: marked.Token
       case 'image':
       case 'space':
       case 'hr':
+      case 'code':
         // No text or child tokens to process
         break
       case 'codespan':
@@ -740,6 +742,7 @@ function markdownFromTokens(lang: LangCode, tokens: marked.Token[], level = 0): 
       case 'space':
       case 'hr':
       case 'escape':
+      case 'code':
         md += token.raw
         break
       case 'html': {
