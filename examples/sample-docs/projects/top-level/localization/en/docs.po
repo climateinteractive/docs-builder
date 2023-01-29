@@ -1,6 +1,0 @@
-#
-msgid ""
-msgstr ""
-
-msgid "index__title"
-msgstr "Sample Documentation"

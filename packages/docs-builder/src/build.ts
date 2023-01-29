@@ -90,7 +90,10 @@ async function buildLangs(enContext: Context): Promise<void> {
     try {
       await buildLang(context, langConfig)
 
-      if (lang === 'en') {
+      // Generate `en/docs.po`, which contains the base English strings.
+      // We only need to generate this if this project is translated (has
+      // one or more languages besides English).
+      if (lang === 'en' && context.config.langs.length > 0) {
         // Generate `en/docs.po`, which contains the base (English) strings
         writeBasePoFile(poPath, [...context.blocks.values()])
       }
