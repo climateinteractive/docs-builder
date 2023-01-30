@@ -8,10 +8,18 @@ import chokidar from 'chokidar'
 
 import { buildDocs, prepareOutDir, writeOutputFile } from '../dist/index.js'
 
+// TODO: For now assume the current directory is the root; need to make this configurable
+const rootDir = process.cwd()
+
+// TODO: For now use `projects` if it exists, otherwise use the current directory
+// as the projects directory; need to make this configurable
+let projectsDir = path.resolve(rootDir, 'projects')
+if (!fs.existsSync(projectsDir)) {
+  projectsDir = rootDir
+}
+
 async function build(opts) {
-  // TODO: For now assume the current directory is the root; make this configurable
-  const rootDir = process.cwd()
-  const projectsDir = path.resolve(rootDir, 'projects')
+  // TODO: For now, output to `public` under the root directory; need to make this configurable
   const baseOutDir = path.resolve(rootDir, 'public')
 
   if (opts.initial) {
@@ -20,21 +28,38 @@ async function build(opts) {
     prepareOutDir(baseOutDir)
   }
 
-  // Find each project that contains a `.config.json` file
-  const projDirs = fs
-    .readdirSync(projectsDir, { withFileTypes: true })
-    .filter(dirent => {
-      if (dirent.isDirectory()) {
-        const configFile = path.resolve(projectsDir, dirent.name, '.config.json')
-        return fs.existsSync(configFile)
-      } else {
-        return false
-      }
-    })
-    .map(dirent => path.resolve(projectsDir, dirent.name))
+  // TODO: For now, if root directory contains `.config.json`, use that as the single project;
+  // need to make this configurable
+  const rootConfigFile = path.resolve(rootDir, '.config.json')
+  let projDirs
+  if (fs.existsSync(rootConfigFile)) {
+    // Use the root directory as the single project
+    projDirs = [rootDir]
+  } else {
+    // Find each project that contains a `.config.json` file
+    projDirs = fs
+      .readdirSync(projectsDir, { withFileTypes: true })
+      .filter(dirent => {
+        if (dirent.isDirectory()) {
+          const configFile = path.resolve(projectsDir, dirent.name, '.config.json')
+          return fs.existsSync(configFile)
+        } else {
+          return false
+        }
+      })
+      .map(dirent => path.resolve(projectsDir, dirent.name))
+  }
 
-  // TODO: Make this configurable
-  const sourceDir = path.resolve(projectsDir, '_shared', 'src')
+  // TODO: For now use `_shared/src` if it is found, otherwise fall back on `src`; need
+  // to make this configurable
+  let sourceDir = path.resolve(projectsDir, '_shared', 'src')
+  if (!fs.existsSync(sourceDir)) {
+    sourceDir = path.resolve(projectsDir, 'src')
+    if (!fs.existsSync(sourceDir)) {
+      console.error('ERROR: Must provide a `<projects>/_shared/src` or `<projects>/src` directory')
+      process.exit(1)
+    }
+  }
 
   // Generate docs for each project
   for (const projDir of projDirs) {
@@ -96,11 +121,10 @@ function watch() {
   // Watch project directories and if any changes are detected, restart the
   // build processes
   const glob = p => p.replace(/\\/g, '/')
-  const projectsPath = path.resolve(process.cwd(), 'projects')
-  const filesToWatch = [glob(projectsPath)]
+  const filesToWatch = [glob(projectsDir)]
   const watcher = chokidar.watch(filesToWatch, {
     ignoreInitial: true,
-    ignored: [/en\/docs\.po/, /saved\.json/],
+    ignored: [/en\/docs\.po/, /saved\.json/, /timestamp/, /public/],
     // XXX: Include a delay, otherwise on macOS we sometimes get multiple
     // change events when a file is saved just once
     awaitWriteFinish: {

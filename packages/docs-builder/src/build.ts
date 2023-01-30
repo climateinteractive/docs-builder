@@ -143,10 +143,7 @@ async function buildLang(context: Context, langConfig: LangConfig): Promise<void
   // that override the default (English) assets.
   const assets = new Assets()
   const copySharedAssets = async () => {
-    // TODO: For now we assume there is a `_shared` directory at the same level as
-    // the project directory and that it contains all of the following files.  We
-    // should make this more customizable.
-    const sharedSrcDir = resolvePath(context.config.baseProjDir, '..', '_shared', 'src')
+    const sharedSrcDir = context.config.sourceDir
     const moduleDir = async (pkgName: string, ...subpaths: string[]) => {
       // Walk up the directory structure to find the package installed in the nearest
       // `node_modules` directory
