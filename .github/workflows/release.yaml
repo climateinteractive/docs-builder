@@ -69,6 +69,11 @@ jobs:
         run: |
           pnpm install
 
+      # XXX: Workaround for Puppeteer issues
+      - name: Install Chromium for Puppeteer
+        run: |
+          node ./packages/docs-builder/node_modules/puppeteer/install.js
+
       - name: Build
         id: build
         run: |
