@@ -119,9 +119,19 @@ export function generateHtml(context: Context, mdRelPath: string, mdPage: Markdo
   // Customize HTML generation
   marked.use({
     renderer: {
-      // Transform special `glossary:` definition links to include a tooltip
-      // and a link to the glossary page/definition
       link: (href, title, text) => {
+        // Allow the custom renderer to handle it first
+        const handleLink = context.config.renderer?.link
+        if (handleLink) {
+          const htmlForLink = handleLink(href, title, text)
+          if (htmlForLink) {
+            return htmlForLink
+          }
+        }
+
+        // If not already handled, apply default handling.  Transform special
+        // `glossary:` definition links to include a tooltip and a link to the
+        // glossary page/definition.
         let classPart: string
         let textPart: string
         let hrefPart: string
@@ -150,8 +160,8 @@ export function generateHtml(context: Context, mdRelPath: string, mdPage: Markdo
         return `<a${classPart}${hrefPart}${titlePart}>${subscriptify(textPart)}</a>`
       },
 
-      // Wrap tables in a div to allow for responsive scrolling behavior
       table: (header, body) => {
+        // Wrap tables in a div to allow for responsive scrolling behavior
         let classes = 'table-container'
         if (mdRelPath.includes('tech_removal')) {
           // XXX: Include a special class for the "CDR Methods" table on the Tech CDR page

@@ -39,7 +39,8 @@ export interface BuildOptions {
  */
 export async function buildDocs(options: BuildOptions): Promise<void> {
   // Read the config from a file
-  const configFile = resolvePath(options.projDir, '.config.json')
+  const configJsonFile = resolvePath(options.projDir, '.config.json')
+  const configJsFile = resolvePath(options.projDir, '.config.js')
   // TODO: Include a `sourceDir` property in the config that is relative to
   // the project directory
   const config = readConfigFromFile(configFile, options.sourceDir, options.mode)

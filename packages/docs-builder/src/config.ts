@@ -15,6 +15,18 @@ export interface LangConfig {
   version: string
 }
 
+export interface Renderer {
+  /**
+   * Return an HTML element for the given Markdown link attributes, or undefined to fall back
+   * on the default link handler.
+   *
+   * @param href The link href attribute.
+   * @param title The link title attribute.
+   * @param text The link text content.
+   */
+  link?(href: string, title: string, text: string): string | undefined
+}
+
 export interface Config {
   /** The build mode, either 'production' or 'development'. */
   mode: BuildMode
@@ -57,6 +69,9 @@ export interface Config {
 
   /** Additional options to control how the pages are generated. */
   options: { [key: string]: string | boolean }
+
+  /** Optional callbacks that can be used to customize Markdown to HTML conversion. */
+  renderer?: Renderer
 }
 
 /**

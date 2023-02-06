@@ -28,21 +28,23 @@ async function build(opts) {
     prepareOutDir(baseOutDir)
   }
 
-  // TODO: For now, if root directory contains `.config.json`, use that as the single project;
+  // TODO: For now, if root directory contains `.config.js[on]`, use that as the single project;
   // need to make this configurable
-  const rootConfigFile = path.resolve(rootDir, '.config.json')
+  const rootConfigJsonFile = path.resolve(rootDir, '.config.json')
+  const rootConfigJsFile = path.resolve(rootDir, '.config.js')
   let projDirs
-  if (fs.existsSync(rootConfigFile)) {
+  if (fs.existsSync(rootConfigJsonFile) || fs.existsSync(rootConfigJsFile)) {
     // Use the root directory as the single project
     projDirs = [rootDir]
   } else {
-    // Find each project that contains a `.config.json` file
+    // Find each project that contains a `.config.js[on]` file
     projDirs = fs
       .readdirSync(projectsDir, { withFileTypes: true })
       .filter(dirent => {
         if (dirent.isDirectory()) {
-          const configFile = path.resolve(projectsDir, dirent.name, '.config.json')
-          return fs.existsSync(configFile)
+          const configJsonFile = path.resolve(projectsDir, dirent.name, '.config.json')
+          const configJsFile = path.resolve(projectsDir, dirent.name, '.config.js')
+          return fs.existsSync(configJsonFile) || fs.existsSync(configJsFile)
         } else {
           return false
         }
