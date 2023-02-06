@@ -72,7 +72,7 @@ export class SearchIndex {
             // Use the default boost value
             pageBoost = 1
           }
-          const headingText = plainTextFromTokens(token.tokens)
+          const headingText = plainTextFromTokens(undefined, token.tokens)
           if (token.depth === 1) {
             this.setCurrentPage(headingText, path, pageBoost)
           } else {
@@ -92,11 +92,11 @@ export class SearchIndex {
         }
         case 'list':
           for (const item of token.items) {
-            this.addSearchableContent(plainTextFromTokens(item.tokens))
+            this.addSearchableContent(plainTextFromTokens(undefined, item.tokens))
           }
           break
         default:
-          this.addSearchableContent(plainTextFromTokens([token]))
+          this.addSearchableContent(plainTextFromTokens(undefined, [token]))
           break
       }
     }

@@ -69,7 +69,7 @@ export function parseMarkdownPage(context: Context, relPath: string): MarkdownPa
   processTokens(context, state, tokens)
 
   // Convert the tokens back into plain Markdown
-  let outMarkdown = markdownFromTokens(context.lang, tokens)
+  let outMarkdown = markdownFromTokens(context, tokens)
 
   // Replace `:use:` directives with the translated text
   outMarkdown = translateTextReplacements(context, outMarkdown)
@@ -160,7 +160,9 @@ function parseCommand(context: Context, token: marked.Token): Command | undefine
   if (m[3]) {
     if (!m[3].match(/^[a-z0-9]+(?:_+[a-z0-9]+)*$/)) {
       throw new Error(
-        `Identifier (${m[3]}) must contain only lowercase letters, digits, and underscores`
+        context.getScopedMessage(
+          `Identifier (${m[3]}) must contain only lowercase letters, digits, and underscores`
+        )
       )
     }
   }
@@ -263,7 +265,7 @@ function processCommand(context: Context, state: ProcessState, command: Command)
 /**
  * Extract just the plain text from the given tokens.
  */
-export function plainTextFromTokens(tokens: marked.Token[]): string {
+export function plainTextFromTokens(context: Context | undefined, tokens: marked.Token[]): string {
   const textParts: string[] = []
 
   for (const token of tokens) {
@@ -274,7 +276,7 @@ export function plainTextFromTokens(tokens: marked.Token[]): string {
         // XXX: Token.Text type has conflict with Token.Tag, so we need to cast
         const textToken = token as marked.Tokens.Text
         if (textToken.tokens) {
-          textParts.push(plainTextFromTokens(textToken.tokens))
+          textParts.push(plainTextFromTokens(context, textToken.tokens))
         } else {
           // XXX: Ignore the link emoji in the auto-generated anchor links
           if (!token.raw.startsWith('&')) {
@@ -292,11 +294,11 @@ export function plainTextFromTokens(tokens: marked.Token[]): string {
       case 'strong':
       case 'em':
       case 'blockquote':
-        textParts.push(plainTextFromTokens(token.tokens))
+        textParts.push(plainTextFromTokens(context, token.tokens))
         break
       case 'list':
         for (const item of token.items) {
-          textParts.push(plainTextFromTokens(item.tokens))
+          textParts.push(plainTextFromTokens(context, item.tokens))
         }
         break
       case 'table':
@@ -316,8 +318,11 @@ export function plainTextFromTokens(tokens: marked.Token[]): string {
       case 'escape':
       case 'code':
         break
-      default:
-        throw new Error(`Unhandled token type ${token.type}`)
+      default: {
+        const baseMsg = `Unhandled token type ${token.type}`
+        const msg = context ? context.getScopedMessage(baseMsg) : baseMsg
+        throw new Error(msg)
+      }
     }
   }
 
@@ -384,7 +389,7 @@ function processToken(context: Context, state: ProcessState, token: marked.Token
       case 'heading':
         state.currentLevel = token.depth
         processTokens(context, state, token.tokens)
-        if (markdownFromTokens(context.lang, token.tokens).trim().length === 0) {
+        if (markdownFromTokens(context, token.tokens).trim().length === 0) {
           // If the heading has no content (i.e., it only contained commands like
           // `section`), then replace it with a simple anchor
           token = anchorToken(context)
@@ -429,7 +434,7 @@ function processToken(context: Context, state: ProcessState, token: marked.Token
         // TODO: Any special handling here?
         break
       default:
-        throw new Error(`Unhandled token type ${token.type}`)
+        throw new Error(context.getScopedMessage(`Unhandled token type ${token.type}`))
     }
 
     // Include the token in the output
@@ -461,7 +466,7 @@ function addBlockForTokens(
     const blockParts: string[] = []
     let basicTextOnly = true
     for (const token of tokens) {
-      const text = extractEnglishString(token)
+      const text = extractEnglishString(context, token)
       if (text) {
         blockParts.push(text)
         if (token.type !== 'text' && token.type !== 'html') {
@@ -556,7 +561,7 @@ function joinLines(raw: string): string {
  * Parse the token parts and extract the full English string that can be used
  * in the base strings file.  This will remove/adjust line breaks as needed.
  */
-function extractEnglishString(token: marked.Token, level = 0): string {
+function extractEnglishString(context: Context, token: marked.Token, level = 0): string {
   // Remove extra line breaks.  In the source Markdown files, we typically put
   // each sentence on a separate line, which makes them easier to diff.  But
   // when generating the `en/docs.po` file, we want the base string to contain
@@ -579,7 +584,7 @@ function extractEnglishString(token: marked.Token, level = 0): string {
       for (const item of token.items) {
         const itemTextParts: string[] = []
         for (const t of item.tokens) {
-          const tokenText = extractEnglishString(t, level + 1)
+          const tokenText = extractEnglishString(context, t, level + 1)
           itemTextParts.push(tokenText)
         }
         const itemText = itemTextParts.join(' ')
@@ -595,7 +600,9 @@ function extractEnglishString(token: marked.Token, level = 0): string {
     case 'html':
       return token.raw
     default:
-      throw new Error(`Unhandled token type '${token.type}': ${token.raw}`)
+      throw new Error(
+        context.getScopedMessage(`Unhandled token type '${token.type}': ${token.raw}`)
+      )
   }
 }
 
@@ -673,7 +680,7 @@ function translateTextReplacements(context: Context, md: string): string {
 
 // XXX: marked.js doesn't provide a way to easily convert tokens back into plain Markdown
 // syntax, so we have to do that ourselves
-function markdownFromTokens(lang: LangCode, tokens: marked.Token[], level = 0): string {
+function markdownFromTokens(context: Context, tokens: marked.Token[], level = 0): string {
   let md = ''
 
   for (const token of tokens) {
@@ -683,22 +690,22 @@ function markdownFromTokens(lang: LangCode, tokens: marked.Token[], level = 0): 
         md += token.text
         break
       case 'heading':
-        md += `${'#'.repeat(token.depth)} ${markdownFromTokens(lang, token.tokens)}\n\n`
+        md += `${'#'.repeat(token.depth)} ${markdownFromTokens(context, token.tokens)}\n\n`
         break
       case 'paragraph':
-        md += markdownFromTokens(lang, token.tokens)
+        md += markdownFromTokens(context, token.tokens)
         break
       case 'link':
-        md += `[${markdownFromTokens(lang, token.tokens)}](${token.href})`
+        md += `[${markdownFromTokens(context, token.tokens)}](${token.href})`
         break
       case 'strong':
-        md += `**${markdownFromTokens(lang, token.tokens)}**`
+        md += `**${markdownFromTokens(context, token.tokens)}**`
         break
       case 'em':
-        md += `_${markdownFromTokens(lang, token.tokens)}_`
+        md += `_${markdownFromTokens(context, token.tokens)}_`
         break
       case 'blockquote':
-        md += `> ${markdownFromTokens(lang, token.tokens)}`
+        md += `> ${markdownFromTokens(context, token.tokens)}`
         break
       case 'codespan':
         md += `\`${token.text}\``
@@ -712,12 +719,16 @@ function markdownFromTokens(lang: LangCode, tokens: marked.Token[], level = 0): 
           const indent = '    '.repeat(level)
           // Configure the prefix depending on whether this is an ordered or unordered list
           const marker = token.ordered ? '1.' : '-'
-          md += `${newlines}${indent}${marker} ${markdownFromTokens(lang, item.tokens, level + 1)}`
+          md += `${newlines}${indent}${marker} ${markdownFromTokens(
+            context,
+            item.tokens,
+            level + 1
+          )}`
         }
         break
       case 'table':
         for (const cell of token.header) {
-          md += `| ${markdownFromTokens(lang, cell.tokens)} `
+          md += `| ${markdownFromTokens(context, cell.tokens)} `
         }
         md += '|\n'
         // TODO: Preserve alignment
@@ -730,8 +741,8 @@ function markdownFromTokens(lang: LangCode, tokens: marked.Token[], level = 0): 
             // XXX: Convert cell text used in the slider settings tables to the
             // language-specific format.  This is very specific to the En-ROADS
             // User Guide and should be made pluggable.
-            const rawCellText = markdownFromTokens(lang, cell.tokens)
-            const cellText = convertSliderRange(rawCellText, lang)
+            const rawCellText = markdownFromTokens(context, cell.tokens)
+            const cellText = convertSliderRange(rawCellText, context.lang)
             md += `| ${cellText} `
           }
           md += '|\n'
@@ -762,7 +773,7 @@ function markdownFromTokens(lang: LangCode, tokens: marked.Token[], level = 0): 
         break
       }
       default:
-        throw new Error(`Unhandled token type ${token.type}`)
+        throw new Error(context.getScopedMessage(`Unhandled token type ${token.type}`))
     }
   }
 
@@ -794,9 +805,8 @@ function resolveReferenceStyleLinks(context: Context, mdText: string, links: Lin
     if (link === undefined) {
       let msg = 'Unresolved reference-style link found for'
       msg += ` lang=${context.lang}`
-      msg += ` page=${context.getCurrentPage()}`
       msg += ` link=${s}`
-      throw new Error(msg)
+      throw new Error(context.getScopedMessage(msg))
     }
     return `[${text}](${link.href})`
   })

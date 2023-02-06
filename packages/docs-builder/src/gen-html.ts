@@ -35,6 +35,9 @@ const langEndonyms: Map<string, string> = new Map([
 export function generateHtml(context: Context, mdRelPath: string, mdPage: MarkdownPage): HtmlPage {
   const baseName = parsePath(mdRelPath).name
 
+  // Set the current page (for error reporting)
+  context.setCurrentPage(mdRelPath)
+
   // Handle footnotes and footnote references
   // TODO: Find all footnote-refs and footnotes first to determine which ones should be omitted
   // TODO: Number footnotes based on the order in which the reference is defined
@@ -54,7 +57,7 @@ export function generateHtml(context: Context, mdRelPath: string, mdPage: Markdo
       // so that multiple refs for the same sentence are separated by spaces.
       // TODO: Allow multiple refs to the same footnote
       if (footnoteRefKeys.has(key)) {
-        throw new Error(`Footnote ref already defined for ${key}: page=${baseName}`)
+        throw new Error(context.getScopedMessage(`Footnote ref already defined for ${key}`))
       }
       footnoteRefKeys.add(key)
       return `<a name="${fnRefName}"></a>[<sup>${footnoteRefNum++}</sup>](#${fnName}) `
@@ -63,7 +66,7 @@ export function generateHtml(context: Context, mdRelPath: string, mdPage: Markdo
       // the footnote reference (at the end of the source sentence).  Note that we
       // preserve any whitespace that preceded the tag.
       if (footnoteKeys.has(key)) {
-        throw new Error(`Footnote already defined for ${key}: page=${baseName}`)
+        throw new Error(context.getScopedMessage(`Footnote already defined for ${key}`))
       }
       footnoteKeys.add(key)
 
@@ -74,12 +77,16 @@ export function generateHtml(context: Context, mdRelPath: string, mdPage: Markdo
   // Detect mismatched footnotes / refs
   for (const key of footnoteRefKeys) {
     if (!footnoteKeys.has(key)) {
-      throw new Error(`Footnote ref references unknown footnote: page=${baseName} id=${key}`)
+      throw new Error(
+        context.getScopedMessage(`Footnote ref references unknown footnote: id=${key}`)
+      )
     }
   }
   for (const key of footnoteKeys) {
     if (!footnoteRefKeys.has(key)) {
-      throw new Error(`Footnote references unknown footnote ref: page=${baseName} id=${key}`)
+      throw new Error(
+        context.getScopedMessage(`Footnote references unknown footnote ref: id=${key}`)
+      )
     }
   }
 
@@ -92,7 +99,7 @@ export function generateHtml(context: Context, mdRelPath: string, mdPage: Markdo
       case 'heading':
         // For now, only look at second-level headers
         if (token.depth === 2) {
-          const headingText = plainTextFromTokens(token.tokens)
+          const headingText = plainTextFromTokens(context, token.tokens)
           let anchorPart = ''
           const m = token.text.match(/<a name="(\w+)">/)
           if (m) {
@@ -131,7 +138,9 @@ export function generateHtml(context: Context, mdRelPath: string, mdPage: Markdo
           const termKey = m[1]
           const tooltipText = context.getBlockText(`glossary__${termKey}__def`)
           if (tooltipText === undefined) {
-            throw new Error(`No glossary definition found for key=${termKey}`)
+            throw new Error(
+              context.getScopedMessage(`No glossary definition found for key=${termKey}`)
+            )
           }
           const tooltipHtml = marked.parseInline(tooltipText).replace(/\n/g, '<br/>')
           classPart = ' class="glossary-link"'
@@ -170,6 +179,10 @@ export function generateHtml(context: Context, mdRelPath: string, mdPage: Markdo
 
   // Parse the Markdown into HTML
   const body = marked.parse(md)
+
+  // Clear the current page
+  context.setCurrentPage(undefined)
+
   return {
     baseName,
     relPath: htmlRelPath,
@@ -362,7 +375,7 @@ export function writeHtmlFile(
       case 'CC_BY_SVG_PATH':
         return `${basePath}/${assets.get('cc_by.svg')}`
       default:
-        throw new Error(`Unexpected substitution id=${id}`)
+        throw new Error(context.getScopedMessage(`Unexpected substitution id=${id}`))
     }
   })
 
@@ -479,7 +492,7 @@ export function writeErrorHtmlFile(context: Context, mdRelPath: string, error: E
       case 'ERROR_STACK':
         return error.stack.replace(/\n/g, '<br/>')
       default:
-        throw new Error(`Unexpected substitution id=${id}`)
+        throw new Error(context.getScopedMessage(`Unexpected substitution id=${id}`))
     }
   })
 

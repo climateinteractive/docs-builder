@@ -86,10 +86,16 @@ export class Context {
    */
   getScopedMessage(baseMessage: string): string {
     if (this.currentPage) {
-      const pagePart = `page=${this.currentPage}`
+      const parts: string[] = []
+      if (this.lang !== 'en') {
+        parts.push(`lang=${this.lang}`)
+      }
+      parts.push(`page=${this.currentPage}`)
       const scope = this.getScopeString()
-      const scopePart = scope ? ` scope=${scope}` : ''
-      return `${baseMessage} (${pagePart}${scopePart})`
+      if (scope) {
+        parts.push(`scope=${scope}`)
+      }
+      return `${baseMessage} (${parts.join(' ')})`
     } else {
       return baseMessage
     }
