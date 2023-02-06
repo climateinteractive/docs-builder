@@ -31,7 +31,7 @@ jobs:
           monorepo-tags: true
 
       - name: Check out repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install Node.js
         uses: actions/setup-node@v3
