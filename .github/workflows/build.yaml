@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           # XXX: Fetch history for all branches; we really only need the history
           # for the base (main) branch in the `sim-slack` script, so this is
@@ -60,6 +60,11 @@ jobs:
       - name: Install dependencies
         run: |
           pnpm install
+
+      # XXX: Workaround for Puppeteer issues
+      - name: Install Chromium for Puppeteer
+        run: |
+          node ./packages/docs-builder/node_modules/puppeteer/install.js
 
       - name: Build
         id: build
