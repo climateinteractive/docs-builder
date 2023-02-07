@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.2](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.0.1...docs-builder-v1.0.2) (2023-02-07)
+
+
+### Bug Fixes
+
+* downgrade to puppeteer 18.x to workaround cache issue ([#19](https://github.com/climateinteractive/docs-builder/issues/19)) ([14b4ed5](https://github.com/climateinteractive/docs-builder/commit/14b4ed5654b9804b7a7e474064df5fdeaf3633f6)), closes [#18](https://github.com/climateinteractive/docs-builder/issues/18)
+* treat trailing spaces (line break) as an error ([#21](https://github.com/climateinteractive/docs-builder/issues/21)) ([7f0655c](https://github.com/climateinteractive/docs-builder/commit/7f0655c6b1b65dbae574c82fc47fc986af1b1a84)), closes [#16](https://github.com/climateinteractive/docs-builder/issues/16)
+* upgrade puppeteer to 19.6.2 ([#12](https://github.com/climateinteractive/docs-builder/issues/12)) ([22ce42a](https://github.com/climateinteractive/docs-builder/commit/22ce42a2961a1965b1ad802eaa4631c652358889)), closes [#11](https://github.com/climateinteractive/docs-builder/issues/11)
+* use scoped error messages in more places ([#17](https://github.com/climateinteractive/docs-builder/issues/17)) ([ec51a76](https://github.com/climateinteractive/docs-builder/commit/ec51a7650e80c8bb04c31acda906b2473a88ecce)), closes [#15](https://github.com/climateinteractive/docs-builder/issues/15)
+
 ## [1.0.1](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.0.0...docs-builder-v1.0.1) (2023-01-30)
 
 
