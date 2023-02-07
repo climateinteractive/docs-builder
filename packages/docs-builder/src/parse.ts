@@ -433,6 +433,13 @@ function processToken(context: Context, state: ProcessState, token: marked.Token
       case 'codespan':
         // TODO: Any special handling here?
         break
+      case 'br': {
+        let msg = 'Detected two or more spaces at the end of a text line.'
+        msg += ' Markdown interprets this as a line break, which can be surprising.'
+        msg += ' If the spaces were added unintentionally, remove the extra spaces.'
+        msg += ' If you do want a line break, use an explicit HTML `<br/>` tag instead.'
+        throw new Error(context.getScopedMessage(msg))
+      }
       default:
         throw new Error(context.getScopedMessage(`Unhandled token type ${token.type}`))
     }
