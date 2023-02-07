@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           # XXX: Fetch history for all branches; we really only need the history
           # for the base (main) branch in the `sim-slack` script, so this is
@@ -36,18 +36,20 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: 7
+          run_install: false
 
       - name: Get pnpm store directory
         id: pnpm-cache
-        run: echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+        run: |
+          echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
 
       - name: Enable pnpm cache
         uses: actions/cache@v3
         with:
           path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
           key: pnpm-store-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            pnpm-store-${{ runner.os }}-
+          # restore-keys: |
+          #   pnpm-store-${{ runner.os }}-
 
       # Save the auth token so that the build can access private packages from
       # the GitHub Packages registry
@@ -58,6 +60,11 @@ jobs:
       - name: Install dependencies
         run: |
           pnpm install
+
+      # XXX: Workaround for Puppeteer issues
+      - name: Install Chromium for Puppeteer
+        run: |
+          node ./packages/docs-builder/node_modules/puppeteer/install.js
 
       - name: Build
         id: build
