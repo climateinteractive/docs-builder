@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.0.2...docs-builder-v1.1.0) (2023-04-05)
+
+
+### Features
+
+* copy all assets found in sourceDir and use ${ASSET-xyz} to reference them in templates ([#25](https://github.com/climateinteractive/docs-builder/issues/25)) ([eb016d5](https://github.com/climateinteractive/docs-builder/commit/eb016d51af421093d1a3ec802ec03521d8974ab1)), closes [#24](https://github.com/climateinteractive/docs-builder/issues/24)
+
 ## [1.0.2](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.0.1...docs-builder-v1.0.2) (2023-02-07)
 
 
