@@ -240,8 +240,12 @@ export function writeHtmlFile(
   body = subscriptify(body)
 
   // Get the path to the logo image
-  const logoPath =
-    templateName === 'simple' ? '' : `${basePath}/${assets.get(context.config.logoPath)}`
+  let logoPath: string
+  if (context.config.logoPath?.length > 0 && templateName !== 'simple') {
+    logoPath = `${basePath}/${assets.get(context.config.logoPath)}`
+  } else {
+    logoPath = ''
+  }
 
   // Get the translated top-level and page titles
   const topLevelTitle = context.getBlockText('index__title')
@@ -314,7 +318,17 @@ export function writeHtmlFile(
   const templateFile = `template-${templateName}.html`
   const templatePath = resolvePath(context.config.sourceDir, templateFile)
   const htmlTemplate = readTextFile(templatePath)
-  const html = htmlTemplate.replaceAll(/\${(\w*)}/g, (_substring, id) => {
+  const html = htmlTemplate.replaceAll(/\${([a-zA-Z0-9._-]*)}/g, (_substring, id) => {
+    if (id.startsWith('ASSET-')) {
+      // Assets are specified like `${ASSET-my-image.png}`; remap to the full relative path to
+      // the asset including the hash in the file name
+      const assetFileName = id.replace('ASSET-', '')
+      if (assetFileName === undefined) {
+        throw new Error(`No mapping found for asset ${assetFileName}`)
+      }
+      return `${basePath}/${assets.get(assetFileName)}`
+    }
+
     switch (id) {
       case 'LANG':
         return context.lang
@@ -324,26 +338,12 @@ export function writeHtmlFile(
         return topLevelTitle
       case 'PAGE_TITLE':
         return fullPageTitle
-      case 'FAVICON_PATH':
-        return `${basePath}/${assets.get('favicon.ico')}`
-      case 'BASE_CSS_PATH':
-        return `${basePath}/${assets.get('base.css')}`
-      case 'PROJECT_CSS_PATH':
-        return `${basePath}/${assets.get('project.css')}`
-      case 'LUNR_PATH':
-        return `${basePath}/${assets.get('lunr.min.js')}`
       // case 'LUNR_STEMMER_SUPPORT':
       //   return lunrStemmerSupportScript
       // case 'LUNR_STEMMER_LANG':
       //   return lunrStemmerLangScript
-      case 'MARK_PATH':
-        return `${basePath}/${assets.get('mark.min.js')}`
       case 'SEARCH_INDEX_JS_PATH':
         return `${basePath}/${assets.get(searchIndexName)}`
-      case 'SEARCH_JS_PATH':
-        return `${basePath}/${assets.get('search.js')}`
-      case 'SUPPORT_JS_PATH':
-        return `${basePath}/${assets.get('support.js')}`
       case 'BASE_PATH':
         return basePath
       case 'INDEX_PATH':
@@ -370,10 +370,6 @@ export function writeHtmlFile(
         return `${basePath}/${context.getProjectShortName()}.pdf`
       case 'BODY':
         return body
-      case 'CC_CC_SVG_PATH':
-        return `${basePath}/${assets.get('cc_cc.svg')}`
-      case 'CC_BY_SVG_PATH':
-        return `${basePath}/${assets.get('cc_by.svg')}`
       default:
         throw new Error(context.getScopedMessage(`Unexpected substitution id=${id}`))
     }
@@ -422,7 +418,9 @@ export function writeCompleteHtmlFile(
         if (!excluded.includes(tocItem.baseName)) {
           const isIndex = tocItem.baseName === 'index'
           const pageTitle = isIndex ? context.getBlockText('pdf_introduction') : tocItem.title
-          tocElems.push(`<a href="#${tocItem.baseName}">${subscriptify(pageTitle)}</a>`)
+          if (pageTitle !== undefined) {
+            tocElems.push(`<a href="#${tocItem.baseName}">${subscriptify(pageTitle)}</a>`)
+          }
         }
         break
       case 'separator':

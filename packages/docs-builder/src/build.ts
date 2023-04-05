@@ -143,7 +143,6 @@ async function buildLang(context: Context, langConfig: LangConfig): Promise<void
   // that override the default (English) assets.
   const assets = new Assets()
   const copySharedAssets = async () => {
-    const sharedSrcDir = context.config.sourceDir
     const moduleDir = async (pkgName: string, ...subpaths: string[]) => {
       // Walk up the directory structure to find the package installed in the nearest
       // `node_modules` directory
@@ -157,19 +156,29 @@ async function buildLang(context: Context, langConfig: LangConfig): Promise<void
       const pkgDir = joinPath(nodeModulesParentDir, 'node_modules', pkgName)
       return resolvePath(pkgDir, ...subpaths)
     }
+
     const copyToBase = (srcDir: string, srcName: string) => {
       assets.copyWithHash(srcDir, srcName, context.outDir)
     }
-    copyToBase(sharedSrcDir, 'base.css')
-    copyToBase(context.config.baseProjDir, 'project.css')
-    copyToBase(sharedSrcDir, 'favicon.ico')
-    copyToBase(sharedSrcDir, 'cc_cc.svg')
-    copyToBase(sharedSrcDir, 'cc_by.svg')
+
+    // Copy from `node_modules`
     copyToBase(await moduleDir('lunr'), 'lunr.min.js')
     copyToBase(await moduleDir('lunr-languages'), 'lunr.stemmer.support.js')
     copyToBase(await moduleDir('mark.js', 'dist'), 'mark.min.js')
-    copyToBase(sharedSrcDir, 'search.js')
-    copyToBase(sharedSrcDir, 'support.js')
+
+    // Copy project-specific CSS
+    copyToBase(context.config.baseProjDir, 'project.css')
+
+    // Copy all other assets from the "shared src" directory.  Note that glob paths
+    // have forward slashes only, so convert backslashes here.
+    const sharedSrcPath = context.config.sourceDir.replaceAll('\\', '/')
+    const sharedSrcFiles = glob.sync(`${sharedSrcPath}/*`, { nodir: true })
+    for (const f of sharedSrcFiles) {
+      const relPath = f.replace(`${sharedSrcPath}/`, '')
+      if (!relPath.endsWith('.html')) {
+        copyToBase(context.config.sourceDir, relPath)
+      }
+    }
   }
   await copySharedAssets()
 
@@ -177,8 +186,11 @@ async function buildLang(context: Context, langConfig: LangConfig): Promise<void
   // the language-specific output directory, then overwrite any language-specific
   // image files that are provided.
   const copyProjectImages = (lang: string) => {
-    // Note that glob paths have forward slashes only, so don't use `resolvePath` here
-    const localizationDir = resolvePath(context.config.baseProjDir, 'localization')
+    // Note that glob paths have forward slashes only, so convert backslashes here
+    const localizationDir = resolvePath(context.config.baseProjDir, 'localization').replaceAll(
+      '\\',
+      '/'
+    )
     const langPath = `${localizationDir}/${lang}`
     const files = glob.sync(`${langPath}/images/**/*`, { nodir: true })
     for (const f of files) {
@@ -240,12 +252,12 @@ async function buildLang(context: Context, langConfig: LangConfig): Promise<void
     writeHtmlFile(context, assets, htmlPage, context.config.template)
   }
 
+  // Write the HTML file that contains all pages (used for generating the PDF)
+  writeCompleteHtmlFile(context, assets, htmlPages)
+
   // Write PDF if included in configuration, and only for production builds (not in
   // local dev mode)
   if (context.config.mode === 'production' && context.config.formats.includes('pdf')) {
-    // Write the HTML file that contains all pages (used for generating the PDF)
-    writeCompleteHtmlFile(context, assets, htmlPages)
-
     // Write the PDF file
     await writePdfFile(context)
   }
