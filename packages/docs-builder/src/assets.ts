@@ -46,7 +46,7 @@ export class Assets {
   get(name: string): string | undefined {
     const p = this.map.get(name)
     if (!p) {
-      throw new Error(`No asset found for ${name}`)
+      throw new Error(`No asset found for '${name}'`)
     }
     return p
   }
