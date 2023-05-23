@@ -1,5 +1,11 @@
 <!-- Common strings -->
 
+<!-- def:pagination_next -->
+Next
+
+<!-- def:pagination_previous -->
+Previous
+
 <!-- def:search_placeholder -->
 Search…
 

@@ -8,7 +8,7 @@ import type { Assets } from './assets'
 import type { Context } from './context'
 import { readTextFile, writeOutputFile } from './fs'
 import { plainTextFromTokens } from './parse'
-import type { TocSection } from './toc'
+import type { TocPageItem, TocSection } from './toc'
 import type { HtmlPage, MarkdownPage } from './types'
 
 const langEndonyms: Map<string, string> = new Map([
@@ -255,6 +255,46 @@ export function writeHtmlFile(
     fullPageTitle = `${pageTitle} &mdash; ${topLevelTitle}`
   } else {
     fullPageTitle = pageTitle
+  }
+
+  // Add the next/previous page buttons
+  const tocPageItems = context.toc.items.filter(tocItem => tocItem.kind === 'page') as TocPageItem[]
+  const currentTocIndex = tocPageItems.findIndex(tocItem => tocItem.relPath === htmlPage.relPath)
+  let prevTocIndex: number
+  let nextTocIndex: number
+  if (tocPageItems.length > 1) {
+    if (currentTocIndex > 0) {
+      prevTocIndex = currentTocIndex - 1
+    }
+    if (currentTocIndex < tocPageItems.length - 1) {
+      nextTocIndex = currentTocIndex + 1
+    }
+  }
+  if (prevTocIndex !== undefined || nextTocIndex !== undefined) {
+    // Get the translated "Next" and "Previous" strings
+    const prevStr = context.getBlockText('pagination_previous') || 'Previous'
+    const nextStr = context.getBlockText('pagination_next') || 'Next'
+    const addLink = (kind: 'next' | 'prev', pageTocIndex: number | undefined) => {
+      if (pageTocIndex !== undefined) {
+        const tocItem = tocPageItems[pageTocIndex]
+        const title = subscriptify(tocItem.title)
+        const href = `${basePath}/${tocItem.relPath}`
+        const sublabel = kind === 'next' ? nextStr : prevStr
+        body += `<a class="pagination-link pagination-${kind}" href="${href}">`
+        body += `<div class="pagination-sublabel">${sublabel}</div>`
+        body += `<div class="pagination-label-row">`
+        body += `<div class="pagination-label">${title}</div>`
+        body += `</div>`
+        body += `</a>`
+      } else {
+        body += `<div class="spacer-flex"></div>`
+      }
+    }
+    body += `<div class="pagination-controls">`
+    addLink('prev', prevTocIndex)
+    body += `<div class="spacer-flex"></div>`
+    addLink('next', nextTocIndex)
+    body += `</div>`
   }
 
   // Build the sidebar page links
