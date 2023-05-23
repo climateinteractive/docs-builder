@@ -272,8 +272,8 @@ export function writeHtmlFile(
   }
   if (prevTocIndex !== undefined || nextTocIndex !== undefined) {
     // Get the translated "Next" and "Previous" strings
-    const prevStr = context.getBlockText('pagination_previous')
-    const nextStr = context.getBlockText('pagination_next')
+    const prevStr = context.getBlockText('pagination_previous') || 'Previous'
+    const nextStr = context.getBlockText('pagination_next') || 'Next'
     const addLink = (kind: 'next' | 'prev', pageTocIndex: number | undefined) => {
       if (pageTocIndex !== undefined) {
         const tocItem = tocPageItems[pageTocIndex]
