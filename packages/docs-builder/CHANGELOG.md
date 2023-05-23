@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.0...docs-builder-v1.2.1) (2023-05-23)
+
+
+### Bug Fixes
+
+* only include Next/Previous links for default template ([#30](https://github.com/climateinteractive/docs-builder/issues/30)) ([894fe8a](https://github.com/climateinteractive/docs-builder/commit/894fe8aa994c18002bad8436bc6fa38d65dc945d)), closes [#29](https://github.com/climateinteractive/docs-builder/issues/29)
+
 ## [1.2.0](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.1.0...docs-builder-v1.2.0) (2023-05-23)
 
 
