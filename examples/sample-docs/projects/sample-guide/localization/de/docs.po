@@ -2,6 +2,12 @@
 msgid ""
 msgstr ""
 
+msgid "pagination_next"
+msgstr "Nächste"
+
+msgid "pagination_previous"
+msgstr "Vorherige"
+
 msgid "search_placeholder"
 msgstr "Durchsuchen…"
 

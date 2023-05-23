@@ -271,13 +271,15 @@ export function writeHtmlFile(
     }
   }
   if (prevTocIndex !== undefined || nextTocIndex !== undefined) {
+    // Get the translated "Next" and "Previous" strings
+    const prevStr = context.getBlockText('pagination_previous')
+    const nextStr = context.getBlockText('pagination_next')
     const addLink = (kind: 'next' | 'prev', pageTocIndex: number | undefined) => {
       if (pageTocIndex !== undefined) {
         const tocItem = tocPageItems[pageTocIndex]
         const title = subscriptify(tocItem.title)
         const href = `${basePath}/${tocItem.relPath}`
-        // TODO: Show translated strings here
-        const sublabel = kind === 'next' ? 'Next' : 'Previous'
+        const sublabel = kind === 'next' ? nextStr : prevStr
         body += `<a class="pagination-link pagination-${kind}" href="${href}">`
         body += `<div class="pagination-sublabel">${sublabel}</div>`
         body += `<div class="pagination-label-row">`
