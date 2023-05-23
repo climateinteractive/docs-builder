@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.1.0...docs-builder-v1.2.0) (2023-05-23)
+
+
+### Features
+
+* add Next/Previous pagination controls to each page ([#27](https://github.com/climateinteractive/docs-builder/issues/27)) ([8209b98](https://github.com/climateinteractive/docs-builder/commit/8209b989d72ac8b02c904290988329a371dfec8e)), closes [#22](https://github.com/climateinteractive/docs-builder/issues/22)
+
 ## [1.1.0](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.0.2...docs-builder-v1.1.0) (2023-04-05)
 
 
