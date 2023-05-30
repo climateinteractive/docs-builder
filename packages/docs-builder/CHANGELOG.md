@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.1...docs-builder-v1.2.2) (2023-05-30)
+
+
+### Bug Fixes
+
+* correct link transformer to work when there are multiple links in one block ([#34](https://github.com/climateinteractive/docs-builder/issues/34)) ([ef5af72](https://github.com/climateinteractive/docs-builder/commit/ef5af721fbd2e6802e270913308af67436cfd8a7)), closes [#33](https://github.com/climateinteractive/docs-builder/issues/33)
+
 ## [1.2.1](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.0...docs-builder-v1.2.1) (2023-05-23)
 
 
