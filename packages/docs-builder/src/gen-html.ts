@@ -234,7 +234,7 @@ export function writeHtmlFile(
 
   // Insert target and rel attributes into all external links so that they open
   // in a separate tab automatically
-  body = body.replace(/(href="http.*")/g, 'target="_blank" rel="noopener noreferrer" $1')
+  body = body.replace(/(href="http(.*?)")/g, 'target="_blank" rel="noopener noreferrer" $1')
 
   // Convert substrings like "CO2" to subscripted form ("CO<sub>2</sub>")
   body = subscriptify(body)
