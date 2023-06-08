@@ -547,6 +547,7 @@ export function writeErrorHtmlFile(context: Context, mdRelPath: string, error: E
 
 const subscriptMap = new Map([
   ['CO2', 'CO<sub>2</sub>'],
+  ['CF4', 'CF<sub>4</sub>'],
   ['CH4', 'CH<sub>4</sub>'],
   ['N2O', 'N<sub>2</sub>O'],
   ['NF3', 'NF<sub>3</sub>'],
@@ -556,8 +557,9 @@ const subscriptMap = new Map([
 /**
  * Replace non-subscript forms of common chemicals with their subscripted equivalent.
  * For example, "CO2" will be converted to "CO<sub>2</sub>".  This only handles
- * the following common forms:
+ * the following common forms (defined in the map above):
  *   CO2
+ *   CF4
  *   CH4
  *   N2O
  *   NF3
