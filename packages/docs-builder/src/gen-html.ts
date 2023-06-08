@@ -572,7 +572,7 @@ function subscriptify(s: string): string {
   // XXX: Some historical graph images in the En-ROADS User Guide have
   // {CO2,CH4,N2O} in the file name, so this regex is set up to avoid
   // converting those filenames
-  return s.replace(/(Hist_)?(CO2|CH4|N2O|NF3|SF6)/g, (m, m1, m2) => {
+  return s.replace(/(Hist_)?(CO2|CF4|CH4|N2O|NF3|SF6)/g, (m, m1, m2) => {
     if (m1) {
       return m
     } else {
