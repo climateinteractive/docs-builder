@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.2...docs-builder-v1.2.3) (2023-06-08)
+
+
+### Bug Fixes
+
+* include CF4 in list of automatically subscripted chemicals ([#37](https://github.com/climateinteractive/docs-builder/issues/37)) ([1e6ae0e](https://github.com/climateinteractive/docs-builder/commit/1e6ae0edcb55d10239ca6179e04f8782ad208dec)), closes [#36](https://github.com/climateinteractive/docs-builder/issues/36)
+
 ## [1.2.2](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.1...docs-builder-v1.2.2) (2023-05-30)
 
 
