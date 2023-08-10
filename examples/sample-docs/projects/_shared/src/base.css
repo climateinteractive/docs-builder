@@ -339,6 +339,10 @@ input[type='search']::-webkit-search-cancel-button {
   color: var(--sidebar-section-link-color);
 }
 
+.sidebar-page-links a.section-level-3 {
+  padding-left: 44px;
+}
+
 .sidebar-page-links a.section .bullet {
   margin-right: 4px;
 }
