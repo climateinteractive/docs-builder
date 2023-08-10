@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.4](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.3...docs-builder-v1.2.4) (2023-08-10)
+
+
+### Bug Fixes
+
+* include 3rd-level section headers in sidebar outline ([#44](https://github.com/climateinteractive/docs-builder/issues/44)) ([a3f7c56](https://github.com/climateinteractive/docs-builder/commit/a3f7c5618d881885404e8949d3f366baca7a24b8)), closes [#43](https://github.com/climateinteractive/docs-builder/issues/43)
+
 ## [1.2.3](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.2...docs-builder-v1.2.3) (2023-06-08)
 
 
