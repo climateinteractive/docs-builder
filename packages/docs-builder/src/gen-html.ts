@@ -97,8 +97,8 @@ export function generateHtml(context: Context, mdRelPath: string, mdPage: Markdo
   for (const token of tokens) {
     switch (token.type) {
       case 'heading':
-        // For now, only look at second-level headers
-        if (token.depth === 2) {
+        // For now, only look at second-level and third-level headers
+        if (token.depth === 2 || token.depth === 3) {
           const headingText = plainTextFromTokens(context, token.tokens)
           let anchorPart = ''
           const m = token.text.match(/<a name="(\w+)">/)
@@ -107,7 +107,8 @@ export function generateHtml(context: Context, mdRelPath: string, mdPage: Markdo
           }
           sections.push({
             title: headingText,
-            relPath: `${htmlRelPath}${anchorPart}`
+            relPath: `${htmlRelPath}${anchorPart}`,
+            level: token.depth
           })
         }
         break
@@ -331,7 +332,8 @@ export function writeHtmlFile(
           }
           const bulletSpan = `<span class="bullet">${bulletText}</span>`
           const textSpan = `<span class="link-text">${subscriptify(linkText)}</span>`
-          sidebarLinks.push(`<a class="section" ${href} ${click}>${bulletSpan}${textSpan}</a>`)
+          const classes = `section section-level-${section.level}`
+          sidebarLinks.push(`<a class="${classes}" ${href} ${click}>${bulletSpan}${textSpan}</a>`)
         }
       }
     } else {

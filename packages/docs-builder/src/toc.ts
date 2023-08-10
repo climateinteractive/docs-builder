@@ -6,6 +6,9 @@ export interface TocSection {
 
   /** The link path/anchor for the section. */
   relPath: string
+
+  /** The heading level of the section. */
+  level: number
 }
 
 export interface TocPageItem {
