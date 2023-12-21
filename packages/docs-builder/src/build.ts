@@ -117,14 +117,14 @@ async function buildLang(context: Context, langConfig: LangConfig): Promise<void
   if (semverCompare(langConfig.version, baseVersion) < 0) {
     // The version of the translation is older than the base (English) version.
     // We will use the "saved" translated content for each page (saved in the repo
-    // in the `localization/<lang>/saved.json` file).  This avoids having the
+    // in the `localization/<lang>/saved.md` file).  This avoids having the
     // generated HTML docs contain a mixture of translated and English strings
     // when the translation lags behind the English version.
     useSavedVersion = true
   } else {
     // The translation is up to date with the base (English) version.  In this
     // mode, we will use the latest base (English) Markdown files for translation
-    // purposes, and will overwrite the `saved.json` file for this language so
+    // purposes, and will overwrite the `saved.md` file for this language so
     // that it can be used later if the translation begins to lag behind the
     // English version.
     useSavedVersion = false
@@ -262,7 +262,7 @@ async function buildLang(context: Context, langConfig: LangConfig): Promise<void
     await writePdfFile(context)
   }
 
-  // Overwrite the `saved.json` file so that it contains the latest translated Markdown
+  // Overwrite the `saved.md` file so that it contains the latest translated Markdown
   // content for this language
   if (context.lang !== 'en' && !useSavedVersion) {
     writeSavedMarkdownContent(context, newMdPages)
@@ -277,18 +277,22 @@ async function buildLang(context: Context, langConfig: LangConfig): Promise<void
  */
 function readSavedMarkdownContent(context: Context): Map<string, MarkdownPage> {
   const localizationDir = resolvePath(context.config.baseProjDir, 'localization')
-  const jsonPath = resolvePath(localizationDir, context.lang, 'saved.json')
-  const rawJson = readTextFile(jsonPath)
-  const jsonObj = JSON.parse(rawJson)
+  const savedMdPath = resolvePath(localizationDir, context.lang, 'saved.md')
+  const savedMdContent = readTextFile(savedMdPath)
+  const matches = savedMdContent.matchAll(
+    /<!-- BEGIN-PAGE\[([A-Za-z./]+?)\] -->([\s\S]*?)<!-- END-PAGE -->/gm
+  )
   const mdPages: Map<string, MarkdownPage> = new Map()
-  for (const [mdPagePath, mdPageContent] of Object.entries(jsonObj)) {
+  for (const match of matches) {
+    const mdPagePath = match[1]
+    const mdPageContent = match[2]
     mdPages.set(mdPagePath, { raw: mdPageContent as string })
   }
   return mdPages
 }
 
 /**
- * Write the translated Markdown content to a JSON file so that it can be restored
+ * Write the translated Markdown content to a single Markdown file so that it can be restored
  * later as needed.
  *
  * @param context The language-specific context.
@@ -296,17 +300,19 @@ function readSavedMarkdownContent(context: Context): Map<string, MarkdownPage> {
  */
 function writeSavedMarkdownContent(context: Context, mdPages: Map<string, MarkdownPage>): void {
   const localizationDir = resolvePath(context.config.baseProjDir, 'localization')
-  const jsonPath = resolvePath(localizationDir, context.lang, 'saved.json')
-  const jsonObj: { [key: string]: string } = {}
+  const savedMdPath = resolvePath(localizationDir, context.lang, 'saved.md')
+  let savedMdContent = ''
   for (const [mdPagePath, mdPage] of mdPages.entries()) {
     if (context.config.untranslated.includes(mdPagePath)) {
-      // Exclude content for untranslated pages in `saved.json`; for those pages, we
+      // Exclude content for untranslated pages in `saved.md`; for those pages, we
       // will use the latest English content
       continue
     }
-    jsonObj[mdPagePath] = mdPage.raw
+    savedMdContent += `<!-- BEGIN-PAGE[${mdPagePath}] -->\n\n`
+    savedMdContent += mdPage.raw.trim()
+    savedMdContent += '\n\n<!-- END-PAGE -->\n\n'
   }
-  writeOutputFile(jsonPath, JSON.stringify(jsonObj, null, 2))
+  writeOutputFile(savedMdPath, savedMdContent)
 }
 
 /**
