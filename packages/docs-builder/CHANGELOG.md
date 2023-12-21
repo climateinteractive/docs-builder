@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.5](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.4...docs-builder-v1.2.5) (2023-12-21)
+
+
+### Bug Fixes
+
+* read/write saved.md instead of saved.json ([#49](https://github.com/climateinteractive/docs-builder/issues/49)) ([152e894](https://github.com/climateinteractive/docs-builder/commit/152e894b0eb54ebc54c1c216f3739053ea61ebd1)), closes [#48](https://github.com/climateinteractive/docs-builder/issues/48)
+
 ## [1.2.4](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.3...docs-builder-v1.2.4) (2023-08-10)
 
 
