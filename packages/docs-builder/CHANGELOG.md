@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.6](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.5...docs-builder-v1.2.6) (2023-12-22)
+
+
+### Bug Fixes
+
+* handle child token when converting text tokens back into Markdown ([#51](https://github.com/climateinteractive/docs-builder/issues/51)) ([558aa9b](https://github.com/climateinteractive/docs-builder/commit/558aa9b7675fcad98c4098b745d5ca80ac9cee29)), closes [#47](https://github.com/climateinteractive/docs-builder/issues/47)
+
 ## [1.2.5](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.4...docs-builder-v1.2.5) (2023-12-21)
 
 
