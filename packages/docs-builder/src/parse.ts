@@ -692,10 +692,18 @@ function markdownFromTokens(context: Context, tokens: marked.Token[], level = 0)
 
   for (const token of tokens) {
     switch (token.type) {
-      case 'text':
-        // TODO: text token can have optional child tokens?
-        md += token.text
+      case 'text': {
+        // If the text token contains child tokens, look at those, otherwise just look
+        // at the plain text
+        // XXX: Token.Text type has conflict with Token.Tag, so we need to cast
+        const textToken = token as marked.Tokens.Text
+        if (textToken.tokens) {
+          md += markdownFromTokens(context, textToken.tokens)
+        } else {
+          md += token.text
+        }
         break
+      }
       case 'heading':
         md += `${'#'.repeat(token.depth)} ${markdownFromTokens(context, token.tokens)}\n\n`
         break
