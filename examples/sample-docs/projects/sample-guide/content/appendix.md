@@ -8,6 +8,9 @@ The following chemical formulas should be subscripted automatically:
 * CO2
 * CF4
 * CH4
+* H2O
 * N2O
 * NF3
+* O2
+* O3
 * SF6
