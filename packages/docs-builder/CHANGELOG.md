@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.7](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.6...docs-builder-v1.2.7) (2024-01-29)
+
+
+### Bug Fixes
+
+* include H2O, O2, and O3 in list of automatically subscripted chemicals ([#54](https://github.com/climateinteractive/docs-builder/issues/54)) ([5e08bb3](https://github.com/climateinteractive/docs-builder/commit/5e08bb3f736ee0c3d0ea8297f1665d6bd22581e0)), closes [#53](https://github.com/climateinteractive/docs-builder/issues/53)
+
 ## [1.2.6](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.5...docs-builder-v1.2.6) (2023-12-22)
 
 
