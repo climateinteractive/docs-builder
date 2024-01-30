@@ -280,7 +280,7 @@ function readSavedMarkdownContent(context: Context): Map<string, MarkdownPage> {
   const savedMdPath = resolvePath(localizationDir, context.lang, 'saved.md')
   const savedMdContent = readTextFile(savedMdPath)
   const matches = savedMdContent.matchAll(
-    /<!-- BEGIN-PAGE\[([A-Za-z./]+?)\] -->([\s\S]*?)<!-- END-PAGE -->/gm
+    /<!-- BEGIN-PAGE\[([A-Za-z\-_./]+?)\] -->([\s\S]*?)<!-- END-PAGE -->/gm
   )
   const mdPages: Map<string, MarkdownPage> = new Map()
   for (const match of matches) {
