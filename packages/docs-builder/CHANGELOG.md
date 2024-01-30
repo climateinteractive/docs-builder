@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.8](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.7...docs-builder-v1.2.8) (2024-01-30)
+
+
+### Bug Fixes
+
+* allow for page filenames including underscore and/or dash when reading saved.md ([#57](https://github.com/climateinteractive/docs-builder/issues/57)) ([b59f018](https://github.com/climateinteractive/docs-builder/commit/b59f018054867cb100acaccd74c4e5a40b6dc96c)), closes [#56](https://github.com/climateinteractive/docs-builder/issues/56)
+
 ## [1.2.7](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.6...docs-builder-v1.2.7) (2024-01-29)
 
 
