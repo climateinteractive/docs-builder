@@ -78,6 +78,6 @@ jobs:
           pnpm ci-build
 
       - name: Publish packages
-        if: ${{ steps.release.outputs.releases_created }}
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
         run: |
           pnpm -r publish
