@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.9](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.8...docs-builder-v1.2.9) (2024-02-24)
+
+
+### Bug Fixes
+
+* drop node-html-parser dependency ([#67](https://github.com/climateinteractive/docs-builder/issues/67)) ([48e951c](https://github.com/climateinteractive/docs-builder/commit/48e951c425e67dc5dd6d1dedbc73b03c6c316e2e))
+* only subscriptify chemical formulas that appear in text blocks ([#65](https://github.com/climateinteractive/docs-builder/issues/65)) ([d9fe245](https://github.com/climateinteractive/docs-builder/commit/d9fe245ee8df1daf6a0a75be06c009b72a275f9c)), closes [#62](https://github.com/climateinteractive/docs-builder/issues/62)
+
 ## [1.2.8](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.7...docs-builder-v1.2.8) (2024-01-30)
 
 
