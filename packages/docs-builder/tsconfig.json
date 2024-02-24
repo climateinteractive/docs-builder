@@ -8,6 +8,7 @@
     "esModuleInterop": true,
     // Enable strict enforcement of `import type`
     "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
     "noImplicitAny": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,

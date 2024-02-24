@@ -26,9 +26,12 @@
     "prettier:fix": "prettier --write .",
     "precommit": "run-s lint prettier:check",
     "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ci": "vitest run",
     "build": "tsup-node",
     "watch": "tsup-node --watch",
-    "ci:build": "run-s clean lint prettier:check type-check build"
+    "ci:build": "run-s clean lint prettier:check type-check test:ci build"
   },
   "dependencies": {
     "@compodoc/live-server": "^1.2.3",

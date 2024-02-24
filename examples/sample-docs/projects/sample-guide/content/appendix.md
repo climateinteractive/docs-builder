@@ -14,3 +14,5 @@ The following chemical formulas should be subscripted automatically:
 * O2
 * O3
 * SF6
+
+Those formulas should not be subscripted when they appear in URLs, for example [CO2](https://www.climateinteractive.org/CO2).
