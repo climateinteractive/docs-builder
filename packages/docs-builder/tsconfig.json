@@ -7,7 +7,7 @@
     "module": "es2020",
     "esModuleInterop": true,
     // Enable strict enforcement of `import type`
-    "importsNotUsedAsValues": "error",
+    "verbatimModuleSyntax": true,
     "noImplicitAny": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
