@@ -124,62 +124,8 @@ export function generateHtml(context: Context, mdRelPath: string, mdPage: Markdo
   // Add the Markdown content to the search index
   context.searchIndex.addMarkdownPage(md, htmlRelPath)
 
-  // Customize HTML generation
-  marked.use({
-    renderer: {
-      // Transform special `glossary:` definition links to include a tooltip
-      // and a link to the glossary page/definition
-      link: (href, title, text) => {
-        let classPart: string
-        let textPart: string
-        let hrefPart: string
-        const m = href.match(/glossary:(\w+)/)
-        if (m) {
-          // This is a glossary link; insert a tooltip element
-          const termKey = m[1]
-          const tooltipText = context.getBlockText(`glossary__${termKey}__def`)
-          if (tooltipText === undefined) {
-            throw new Error(
-              context.getScopedMessage(`No glossary definition found for key=${termKey}`)
-            )
-          }
-          const tooltipHtml = marked.parseInline(tooltipText).replace(/\n/g, '<br/>')
-          classPart = ' class="glossary-link"'
-          textPart = `${text}<span class="tooltip"><span class="tooltip-arrow"> </span>${tooltipHtml}</span>`
-          // TODO: This path assumes the page is in the `guide` directory; need to fix
-          // this if we include glossary links on the index page
-          hrefPart = ` href="./glossary.html#glossary__${termKey}"`
-        } else {
-          // This is a normal link
-          classPart = ''
-          textPart = text
-          hrefPart = href ? ` href="${href}"` : ''
-        }
-
-        const titlePart = title ? ` title="${title}"` : ''
-        return `<a${classPart}${hrefPart}${titlePart}>${subscriptify(textPart)}</a>`
-      },
-
-      // Wrap tables in a div to allow for responsive scrolling behavior
-      table: (header, body) => {
-        let classes = 'table-container'
-        if (mdRelPath.includes('tech_removal')) {
-          // XXX: Include a special class for the "CDR Methods" table on the Tech CDR page
-          // in the En-ROADS User Guide so that we can target it in CSS.  Currently we
-          // check the number of rows to differentiate it from the other slider settings
-          // table on that page.
-          const rowTags = [...body.matchAll(/<tr>/g)]
-          if (rowTags.length > 1) {
-            classes += ' removal_methods'
-          }
-        }
-        return `<div class="${classes}"><table><thead>${header}</thead><tbody>${body}</tbody></table></div>`
-      }
-    }
-  })
-
-  // Parse the Markdown into HTML
-  const body = marked.parse(md)
+  // Convert the Markdown content to HTML
+  const body = convertMarkdownToHtml(context, md)
 
   // Clear the current page
   context.setCurrentPage(undefined)
@@ -236,9 +182,6 @@ export function writeHtmlFile(
   // Insert target and rel attributes into all external links so that they open
   // in a separate tab automatically
   body = body.replace(/(href="http(.*?)")/g, 'target="_blank" rel="noopener noreferrer" $1')
-
-  // Convert substrings like "CO2" to subscripted form ("CO<sub>2</sub>")
-  body = subscriptify(body)
 
   // Get the path to the logo image
   let logoPath: string
@@ -560,6 +503,80 @@ const subscriptMap = new Map([
 ])
 
 /**
+ * Convert the given Markdown content to HTML, applying custom conversions.
+ *
+ * @param context The language-specific context.
+ * @param md The Markdown content.
+ * @return The resulting HTML content.
+ */
+export function convertMarkdownToHtml(context: Context, md: string): string {
+  // Customize HTML generation
+  marked.use({
+    renderer: {
+      // Convert substrings like "CO2" to subscripted form ("CO<sub>2</sub>").
+      // Performing this conversion on text elements only ensures that we don't
+      // affect other things like URLs or image paths.
+      text: text => {
+        return subscriptify(text)
+      },
+
+      // Transform special `glossary:` definition links to include a tooltip
+      // and a link to the glossary page/definition
+      link: (href, title, text) => {
+        let classPart: string
+        let textPart: string
+        let hrefPart: string
+        const m = href.match(/glossary:(\w+)/)
+        if (m) {
+          // This is a glossary link; insert a tooltip element
+          const termKey = m[1]
+          const tooltipText = context.getBlockText(`glossary__${termKey}__def`)
+          if (tooltipText === undefined) {
+            throw new Error(
+              context.getScopedMessage(`No glossary definition found for key=${termKey}`)
+            )
+          }
+          const tooltipHtml = marked.parseInline(tooltipText).replace(/\n/g, '<br/>')
+          classPart = ' class="glossary-link"'
+          textPart = `${text}<span class="tooltip"><span class="tooltip-arrow"> </span>${tooltipHtml}</span>`
+          // TODO: This path assumes the page is in the `guide` directory; need to fix
+          // this if we include glossary links on the index page
+          hrefPart = ` href="./glossary.html#glossary__${termKey}"`
+        } else {
+          // This is a normal link
+          classPart = ''
+          textPart = text
+          hrefPart = href ? ` href="${href}"` : ''
+        }
+
+        const titlePart = title ? ` title="${title}"` : ''
+        return `<a${classPart}${hrefPart}${titlePart}>${subscriptify(textPart)}</a>`
+      },
+
+      // Wrap tables in a div to allow for responsive scrolling behavior
+      table: (header, body) => {
+        const mdRelPath = context.getCurrentPage()
+        let classes = 'table-container'
+        if (mdRelPath.includes('tech_removal')) {
+          // XXX: Include a special class for the "CDR Methods" table on the Tech CDR page
+          // in the En-ROADS User Guide so that we can target it in CSS.  Currently we
+          // check the number of rows to differentiate it from the other slider settings
+          // table on that page.
+          const rowTags = [...body.matchAll(/<tr>/g)]
+          if (rowTags.length > 1) {
+            classes += ' removal_methods'
+          }
+        }
+        return `<div class="${classes}"><table><thead>${header}</thead><tbody>${body}</tbody></table></div>`
+      }
+    }
+  })
+
+  // Parse the Markdown into HTML
+  return marked.parse(md)
+}
+
+/**
  * Replace non-subscript forms of common chemicals with their subscripted equivalent.
  * For example, "CO2" will be converted to "CO<sub>2</sub>".  This only handles
  * the following common forms (defined in the map above):
@@ -576,15 +593,8 @@ const subscriptMap = new Map([
  * @param s The input string.
  * @return A new string containing subscripted chemical names.
  */
-function subscriptify(s: string): string {
-  // XXX: Some historical graph images in the En-ROADS User Guide have
-  // {CO2,CH4,N2O} in the file name, so this regex is set up to avoid
-  // converting those filenames
-  return s.replace(/(Hist_)?(CO2|CF4|CH4|H2O|N2O|NF3|O2|O3|SF6)/g, (m, m1, m2) => {
-    if (m1) {
-      return m
-    } else {
-      return subscriptMap.get(m2)
-    }
+export function subscriptify(s: string): string {
+  return s.replace(/(CO2|CF4|CH4|H2O|N2O|NF3|O2|O3|SF6)/g, (_m, m1) => {
+    return subscriptMap.get(m1)
   })
 }
