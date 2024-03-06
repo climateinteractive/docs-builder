@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.10](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.9...docs-builder-v1.2.10) (2024-03-06)
+
+
+### Bug Fixes
+
+* correct file watcher to ignore saved.md files instead of saved.json ([#69](https://github.com/climateinteractive/docs-builder/issues/69)) ([8329406](https://github.com/climateinteractive/docs-builder/commit/8329406a31cbee112eca06385252bf22e893ee6c)), closes [#68](https://github.com/climateinteractive/docs-builder/issues/68)
+
 ## [1.2.9](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.8...docs-builder-v1.2.9) (2024-02-24)
 
 
