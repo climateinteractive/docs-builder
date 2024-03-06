@@ -124,7 +124,7 @@ function watch() {
   const filesToWatch = [glob(projectsDir)]
   const watcher = chokidar.watch(filesToWatch, {
     ignoreInitial: true,
-    ignored: [/en\/docs\.po/, /saved\.json/, /timestamp/, /public/],
+    ignored: [/en\/docs\.po/, /saved\.md/, /timestamp/, /public/],
     // XXX: Include a delay, otherwise on macOS we sometimes get multiple
     // change events when a file is saved just once
     awaitWriteFinish: {
