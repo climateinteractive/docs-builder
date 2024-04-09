@@ -127,13 +127,17 @@ export function generateHtml(context: Context, mdRelPath: string, mdPage: Markdo
   // Convert the Markdown content to HTML
   const body = convertMarkdownToHtml(context, md)
 
+  // Save the names of the `<head>` fragments to include
+  const headFragments = mdPage.frontmatter?.fragments?.head || []
+
   // Clear the current page
   context.setCurrentPage(undefined)
 
   return {
     baseName,
     relPath: htmlRelPath,
-    body
+    body,
+    headFragments
   }
 }
 
@@ -308,7 +312,17 @@ export function writeHtmlFile(
   // Build the final HTML file by replacing fields in the template
   const templateFile = `template-${templateName}.html`
   const templatePath = resolvePath(context.config.sourceDir, templateFile)
-  const htmlTemplate = readTextFile(templatePath)
+  const htmlTemplateRaw = readTextFile(templatePath)
+  let headSlot = ''
+  if (htmlPage.headFragments) {
+    // Insert fragments into the `<head>` slot
+    for (const fragmentName of htmlPage.headFragments) {
+      const fragmentPath = resolvePath(context.config.sourceDir, `fragment-${fragmentName}.html`)
+      const fragmentHtml = readTextFile(fragmentPath)
+      headSlot += fragmentHtml + '\n'
+    }
+  }
+  const htmlTemplate = htmlTemplateRaw.replace('<!-- {HEAD FRAGMENTS} -->', headSlot)
   const html = htmlTemplate.replaceAll(/\${([a-zA-Z0-9._-]*)}/g, (_substring, id) => {
     if (id.startsWith('ASSET-')) {
       // Assets are specified like `${ASSET-my-image.png}`; remap to the full relative path to

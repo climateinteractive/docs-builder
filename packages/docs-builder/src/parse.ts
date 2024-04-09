@@ -1,7 +1,9 @@
 // Copyright (c) 2022 Climate Interactive / New Venture Fund
 
 import { resolve } from 'path'
+import matter from 'gray-matter'
 import { marked } from 'marked'
+
 import type { BlockId } from './block'
 import type { Command } from './command'
 import type { Context } from './context'
@@ -46,7 +48,12 @@ export function parseMarkdownPage(context: Context, relPath: string): MarkdownPa
 
   // Read the Markdown file
   const filePath = resolve(context.config.baseProjDir, relPath)
-  const origMarkdown = readTextFile(filePath)
+  const origMarkdownWithFrontmatter = readTextFile(filePath)
+
+  // Separate frontmatter from the content
+  const origMarkdownSeparated = matter(origMarkdownWithFrontmatter)
+  const origMarkdown = origMarkdownSeparated.content
+  const frontmatter = origMarkdownSeparated.data
 
   // Append synthesized link info for glossary references so that source files can
   // use `[link text][glossary_term]` without manually defining a reference for
@@ -81,7 +88,8 @@ export function parseMarkdownPage(context: Context, relPath: string): MarkdownPa
   context.setCurrentPage(undefined)
 
   return {
-    raw: outMarkdown
+    raw: outMarkdown,
+    frontmatter
   }
 }
 
