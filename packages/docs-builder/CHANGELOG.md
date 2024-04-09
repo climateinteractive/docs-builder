@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.10...docs-builder-v1.3.0) (2024-04-09)
+
+
+### Features
+
+* allow for specifying custom fragments to be included in head element ([#72](https://github.com/climateinteractive/docs-builder/issues/72)) ([a08da4f](https://github.com/climateinteractive/docs-builder/commit/a08da4f5d0a2e24ce9465ae1bc3cc305d26dd43c)), closes [#71](https://github.com/climateinteractive/docs-builder/issues/71)
+
 ## [1.2.10](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.9...docs-builder-v1.2.10) (2024-03-06)
 
 
