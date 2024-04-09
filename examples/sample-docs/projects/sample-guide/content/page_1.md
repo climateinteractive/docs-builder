@@ -1,3 +1,8 @@
+---
+fragments:
+  head: ['example']
+---
+
 # <!-- section:page_1 --><!-- def:title -->Page 1
 
 <!-- def:intro -->

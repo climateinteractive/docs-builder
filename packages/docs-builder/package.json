@@ -39,6 +39,7 @@
     "find-up": "^6.3.0",
     "gettext-parser": "^5.0.0",
     "glob": "^8.0.3",
+    "gray-matter": "^4.0.3",
     "lunr": "^2.3.9",
     "lunr-languages": "^1.9.0",
     "mark.js": "^8.11.1",
