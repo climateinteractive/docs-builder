@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.3.0...docs-builder-v1.3.1) (2024-11-08)
+
+
+### Bug Fixes
+
+* add endonym mappings for more languages ([#75](https://github.com/climateinteractive/docs-builder/issues/75)) ([f777788](https://github.com/climateinteractive/docs-builder/commit/f777788ef7a0e3434aa0ec0ee1201dab6f6fdeb6)), closes [#74](https://github.com/climateinteractive/docs-builder/issues/74)
+
 ## [1.3.0](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.2.10...docs-builder-v1.3.0) (2024-04-09)
 
 
