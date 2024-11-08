@@ -12,10 +12,26 @@ import type { TocPageItem, TocSection } from './toc'
 import type { HtmlPage, MarkdownPage } from './types'
 
 const langEndonyms: Map<string, string> = new Map([
-  ['en', 'English'],
+  ['ar', 'العربية'],
+  ['bg', 'Български'],
   ['de', 'Deutsch'],
+  ['en', 'English'],
+  ['es', 'Español'],
+  ['fa', 'فارسی'],
+  ['fr', 'Français'],
+  ['he', 'עברית'],
+  ['hi', 'हिन्दी'],
   ['it', 'Italiano'],
-  ['nb', 'Norsk&nbsp;Bokmål']
+  ['ja', '日本語'],
+  ['nb', 'Norsk&nbsp;Bokmål'],
+  ['nl', 'Nederlands'],
+  ['pt', 'Português'],
+  ['ru', 'Русский'],
+  ['sl', 'Slovenščina'],
+  ['sw', 'Kiswahili'],
+  ['tr', 'Türkçe'],
+  ['zh_Hans', '简体中文'],
+  ['zh_Hant', '繁體中文']
 ])
 
 /**
