@@ -15,7 +15,9 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # TODO: Run on Ubuntu 22 as a workaround for Puppeteer issues on ubuntu-latest (24):
+    #   https://github.com/puppeteer/puppeteer/issues/12818
+    runs-on: ubuntu-22.04
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
