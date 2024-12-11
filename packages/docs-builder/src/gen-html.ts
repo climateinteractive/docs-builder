@@ -14,6 +14,7 @@ import type { HtmlPage, MarkdownPage } from './types'
 const langEndonyms: Map<string, string> = new Map([
   ['ar', 'العربية'],
   ['bg', 'Български'],
+  ['cs', 'Čeština'],
   ['de', 'Deutsch'],
   ['en', 'English'],
   ['es', 'Español'],
