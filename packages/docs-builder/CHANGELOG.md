@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.3.3](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.3.2...docs-builder-v1.3.3) (2024-12-12)
+
+
+### Bug Fixes
+
+* add range mappings for Czech and Portuguese ([#86](https://github.com/climateinteractive/docs-builder/issues/86)) ([55737af](https://github.com/climateinteractive/docs-builder/commit/55737af57ccb81a84963bad9ed31bbc505f160ac)), closes [#85](https://github.com/climateinteractive/docs-builder/issues/85)
+* remove `removal_methods` table hack ([#84](https://github.com/climateinteractive/docs-builder/issues/84)) ([9541790](https://github.com/climateinteractive/docs-builder/commit/9541790b37a1ff5114b967f99c8ee51e1ddd95a7)), closes [#83](https://github.com/climateinteractive/docs-builder/issues/83)
+* throw an error if text block contains HTML comment markup ([#81](https://github.com/climateinteractive/docs-builder/issues/81)) ([13c3807](https://github.com/climateinteractive/docs-builder/commit/13c3807cf872ad6d2c5153dd0a17503e9f286a0b)), closes [#80](https://github.com/climateinteractive/docs-builder/issues/80)
+
 ## [1.3.2](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.3.1...docs-builder-v1.3.2) (2024-12-11)
 
 
