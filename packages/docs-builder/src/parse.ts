@@ -8,7 +8,7 @@ import type { BlockId } from './block'
 import type { Command } from './command'
 import type { Context } from './context'
 import { readTextFile } from './fs'
-import type { LangCode, MarkdownPage } from './types'
+import type { MarkdownPage } from './types'
 
 class ProcessState {
   /** The current heading level (0 == none, 1 == '#', 2 == '##', etc). */
@@ -765,7 +765,7 @@ function markdownFromTokens(context: Context, tokens: marked.Token[], level = 0)
             // language-specific format.  This is very specific to the En-ROADS
             // User Guide and should be made pluggable.
             const rawCellText = markdownFromTokens(context, cell.tokens)
-            const cellText = convertSliderRange(rawCellText, context.lang)
+            const cellText = convertSliderRange(context, rawCellText)
             md += `| ${cellText} `
           }
           md += '|\n'
@@ -845,9 +845,9 @@ function resolveReferenceStyleLinks(context: Context, mdText: string, links: Lin
  *
  * XXX: This is very specific to the En-ROADS User Guide and should be made pluggable.
  */
-function convertSliderRange(cellText: string, lang: LangCode): string {
+function convertSliderRange(context: Context, cellText: string): string {
   function num(s: string): string {
-    switch (lang) {
+    switch (context.lang) {
       case 'cs':
       case 'de':
       case 'it':
@@ -860,90 +860,65 @@ function convertSliderRange(cellText: string, lang: LangCode): string {
   }
 
   // Try matching dollar ranges, e.g., **+$0.01 to -$0.01**
-  // TODO: Inject values into template string like `$${sign1}${value1} to $${sign2}${value2}`
   let m = cellText.match(/(\*?\*?)([+-]?)\$(\d+\.?\d{0,2})\s+to\s+([+-]?)\$(\d+\.?\d{0,2})(\*?\*?)/)
   if (m) {
-    switch (lang) {
-      case 'cs':
-        return `${m[1]}${m[2]}${num(m[3])}&nbsp;$ až ${m[4]}${num(m[5])}&nbsp;$${m[6]}`
-      case 'de':
-        return `${m[1]}${m[2]}${num(m[3])}&nbsp;$ bis ${m[4]}${num(m[5])}&nbsp;$${m[6]}`
-      case 'es':
-        return `${m[1]}del ${m[2]}$${num(m[3])} al ${m[4]}$${num(m[5])}${m[6]}`
-      case 'it':
-        return `${m[1]}da ${m[2]}$${num(m[3])} a ${m[4]}$${num(m[5])}${m[6]}`
-      case 'nb':
-        return `${m[1]}${m[2]}$&nbsp;${num(m[3])} til ${m[4]}$&nbsp;${num(m[5])}${m[6]}`
-      case 'pt':
-        return `${m[1]}${m[2]}$&nbsp;${num(m[3])} a ${m[4]}$&nbsp;${num(m[5])}${m[6]}`
-      case 'en':
-      default:
-        return cellText
+    let s = context.getTranslatedBlockText('slider_range_dollars')
+    if (s) {
+      // Inject values into template string like `$${sign1}${value1} to $${sign2}${value2}`
+      s = s.replace('${sign1}', m[2])
+      s = s.replace('${value1}', num(m[3]))
+      s = s.replace('${sign2}', m[4])
+      s = s.replace('${value2}', num(m[5]))
+      return `${m[1]}${s}${m[6]}`
+    } else {
+      // If no template string, return the original English text
+      return cellText
     }
   }
 
   // Try matching percent ranges, e.g., **+10% to -20%**
-  // TODO: Inject values into template string like `${sign1}${value1}% to ${sign2}${value2}%`
   m = cellText.match(/(\*?\*?)([+-]?)(\d+\.?\d{0,2})%\s+to\s+([+-]?)(\d+\.?\d{0,2})%(\*?\*?)/)
   if (m) {
-    switch (lang) {
-      case 'cs':
-        return `${m[1]}${m[2]}${num(m[3])}&nbsp;% až ${m[4]}${num(m[5])}&nbsp;%${m[6]}`
-      case 'de':
-        return `${m[1]}${m[2]}${num(m[3])}&nbsp;% bis ${m[4]}${num(m[5])}&nbsp;%${m[6]}`
-      case 'es':
-        return `${m[1]}del ${m[2]}${num(m[3])}% al ${m[4]}${num(m[5])}%${m[6]}`
-      case 'it':
-        return `${m[1]}da ${m[2]}${num(m[3])}% a ${m[4]}${num(m[5])}%${m[6]}`
-      case 'nb':
-        return `${m[1]}${m[2]}${num(m[3])}&nbsp;% til ${m[4]}${num(m[5])}&nbsp;%${m[6]}`
-      case 'pt':
-        return `${m[1]}${m[2]}${num(m[3])}% a ${m[4]}${num(m[5])}%${m[6]}`
-      case 'en':
-      default:
-        return cellText
+    let s = context.getTranslatedBlockText('slider_range_percents')
+    if (s) {
+      // Inject values into template string like `${sign1}${value1}% to ${sign2}${value2}%`
+      s = s.replace('${sign1}', m[2])
+      s = s.replace('${value1}', num(m[3]))
+      s = s.replace('${sign2}', m[4])
+      s = s.replace('${value2}', num(m[5]))
+      return `${m[1]}${s}${m[6]}`
+    } else {
+      // If no template string, return the original English text
+      return cellText
     }
   }
 
   // Try matching population ranges, e.g., **10.5 to 11.4 billion**
-  // TODO: Inject values into template string like `${value1} to ${value2} billion`
   m = cellText.match(/(\*?\*?)(\d+\.?\d{0,2})\s+to\s+(\d+\.?\d{0,2}) billion(\*?\*?)/)
   if (m) {
-    switch (lang) {
-      case 'cs':
-        return `${m[1]}${num(m[2])} až ${num(m[3])} miliardy${m[4]}`
-      case 'de':
-        return `${m[1]}${num(m[2])} bis ${num(m[3])} Milliarden${m[4]}`
-      case 'es':
-        return `${m[1]}${num(m[2])} a ${num(m[3])} mil millones${m[4]}`
-      case 'it':
-        return `${m[1]}da ${num(m[2])} a ${num(m[3])} miliardi${m[4]}`
-      case 'nb':
-        return `${m[1]}${num(m[2])} til ${num(m[3])} milliarder${m[4]}`
-      case 'pt':
-        return `${m[1]}${num(m[2])} a ${num(m[3])} bilhões${m[4]}`
-      case 'en':
-      default:
-        return cellText
+    let s = context.getTranslatedBlockText('slider_range_billions')
+    if (s) {
+      // Inject values into template string like `${value1} to ${value2} billion`
+      s = s.replace('${value1}', num(m[2]))
+      s = s.replace('${value2}', num(m[3]))
+      return `${m[1]}${s}${m[4]}`
+    } else {
+      // If no template string, return the original English text
+      return cellText
     }
   }
 
   // Try matching plain percentage, e.g. 2.6%
-  // TODO: Inject values into template string like `${value}%`
-  m = cellText.match(/(\*?\*?)([+-]?)(\d+\.?\d{0,2})%(\*?\*?)/)
+  m = cellText.match(/^(\*?\*?)([+-]?)(\d+\.?\d{0,2})%(\*?\*?)$/)
   if (m) {
-    switch (lang) {
-      case 'de':
-      case 'nb':
-        return `${m[1]}${m[2]}${num(m[3])}&nbsp;%${m[4]}`
-      case 'cs':
-      case 'es':
-      case 'it':
-      case 'pt':
-        return `${m[1]}${m[2]}${num(m[3])}%${m[4]}`
-      case 'en':
-      default:
-        return cellText
+    let s = context.getTranslatedBlockText('slider_value_percent')
+    if (s) {
+      // Inject values into template string like `${value}%`
+      s = s.replace('${value}', num(m[2]))
+      return `${m[1]}${s}${m[3]}`
+    } else {
+      // If no template string, return the original English text
+      return cellText
     }
   }
 
