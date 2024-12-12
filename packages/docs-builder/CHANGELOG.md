@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.4](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.3.3...docs-builder-v1.3.4) (2024-12-12)
+
+
+### Bug Fixes
+
+* remove hardcoded slider range mappings ([#88](https://github.com/climateinteractive/docs-builder/issues/88)) ([6728140](https://github.com/climateinteractive/docs-builder/commit/67281402bc612a87960cc8161da32f4a4b386036)), closes [#87](https://github.com/climateinteractive/docs-builder/issues/87)
+
 ## [1.3.3](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.3.2...docs-builder-v1.3.3) (2024-12-12)
 
 
