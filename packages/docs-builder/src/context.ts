@@ -146,6 +146,17 @@ export class Context {
       }
     }
 
+    // Fail the build if a block contains an HTML comment; usually when a comment appears
+    // it is the result of a misconfigured command block (like for a `section` or `def`),
+    // and those should never appear in the translation files, so we trap them here
+    if (text.includes('<!--')) {
+      throw new Error(
+        this.getScopedMessage(
+          `Block for '${fullId}' contains an unexpected HTML comment, which should not be included in translation files`
+        )
+      )
+    }
+
     this.blocks.set(fullId, {
       id: fullId,
       text,
