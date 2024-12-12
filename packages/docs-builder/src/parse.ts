@@ -841,16 +841,18 @@ function resolveReferenceStyleLinks(context: Context, mdText: string, links: Lin
  *   English input:
  *     **+$0.01 to -$0.01**
  *   German output:
- *     **+0.01 $ bis -0.01 $**
+ *     **+0,01 $ bis -0,01 $**
  *
  * XXX: This is very specific to the En-ROADS User Guide and should be made pluggable.
  */
 function convertSliderRange(cellText: string, lang: LangCode): string {
   function num(s: string): string {
     switch (lang) {
+      case 'cs':
       case 'de':
       case 'it':
       case 'nb':
+      case 'pt':
         return s.replace('.', ',')
       default:
         return s
@@ -858,9 +860,12 @@ function convertSliderRange(cellText: string, lang: LangCode): string {
   }
 
   // Try matching dollar ranges, e.g., **+$0.01 to -$0.01**
+  // TODO: Inject values into template string like `$${sign1}${value1} to $${sign2}${value2}`
   let m = cellText.match(/(\*?\*?)([+-]?)\$(\d+\.?\d{0,2})\s+to\s+([+-]?)\$(\d+\.?\d{0,2})(\*?\*?)/)
   if (m) {
     switch (lang) {
+      case 'cs':
+        return `${m[1]}${m[2]}${num(m[3])}&nbsp;$ až ${m[4]}${num(m[5])}&nbsp;$${m[6]}`
       case 'de':
         return `${m[1]}${m[2]}${num(m[3])}&nbsp;$ bis ${m[4]}${num(m[5])}&nbsp;$${m[6]}`
       case 'es':
@@ -869,6 +874,8 @@ function convertSliderRange(cellText: string, lang: LangCode): string {
         return `${m[1]}da ${m[2]}$${num(m[3])} a ${m[4]}$${num(m[5])}${m[6]}`
       case 'nb':
         return `${m[1]}${m[2]}$&nbsp;${num(m[3])} til ${m[4]}$&nbsp;${num(m[5])}${m[6]}`
+      case 'pt':
+        return `${m[1]}${m[2]}$&nbsp;${num(m[3])} a ${m[4]}$&nbsp;${num(m[5])}${m[6]}`
       case 'en':
       default:
         return cellText
@@ -876,9 +883,12 @@ function convertSliderRange(cellText: string, lang: LangCode): string {
   }
 
   // Try matching percent ranges, e.g., **+10% to -20%**
+  // TODO: Inject values into template string like `${sign1}${value1}% to ${sign2}${value2}%`
   m = cellText.match(/(\*?\*?)([+-]?)(\d+\.?\d{0,2})%\s+to\s+([+-]?)(\d+\.?\d{0,2})%(\*?\*?)/)
   if (m) {
     switch (lang) {
+      case 'cs':
+        return `${m[1]}${m[2]}${num(m[3])}&nbsp;% až ${m[4]}${num(m[5])}&nbsp;%${m[6]}`
       case 'de':
         return `${m[1]}${m[2]}${num(m[3])}&nbsp;% bis ${m[4]}${num(m[5])}&nbsp;%${m[6]}`
       case 'es':
@@ -887,6 +897,8 @@ function convertSliderRange(cellText: string, lang: LangCode): string {
         return `${m[1]}da ${m[2]}${num(m[3])}% a ${m[4]}${num(m[5])}%${m[6]}`
       case 'nb':
         return `${m[1]}${m[2]}${num(m[3])}&nbsp;% til ${m[4]}${num(m[5])}&nbsp;%${m[6]}`
+      case 'pt':
+        return `${m[1]}${m[2]}${num(m[3])}% a ${m[4]}${num(m[5])}%${m[6]}`
       case 'en':
       default:
         return cellText
@@ -894,17 +906,22 @@ function convertSliderRange(cellText: string, lang: LangCode): string {
   }
 
   // Try matching population ranges, e.g., **10.5 to 11.4 billion**
+  // TODO: Inject values into template string like `${value1} to ${value2} billion`
   m = cellText.match(/(\*?\*?)(\d+\.?\d{0,2})\s+to\s+(\d+\.?\d{0,2}) billion(\*?\*?)/)
   if (m) {
     switch (lang) {
+      case 'cs':
+        return `${m[1]}${num(m[2])} až ${num(m[3])} miliardy${m[4]}`
       case 'de':
         return `${m[1]}${num(m[2])} bis ${num(m[3])} Milliarden${m[4]}`
       case 'es':
-        throw new Error('Not yet implemented for Spanish')
+        return `${m[1]}${num(m[2])} a ${num(m[3])} mil millones${m[4]}`
       case 'it':
         return `${m[1]}da ${num(m[2])} a ${num(m[3])} miliardi${m[4]}`
       case 'nb':
         return `${m[1]}${num(m[2])} til ${num(m[3])} milliarder${m[4]}`
+      case 'pt':
+        return `${m[1]}${num(m[2])} a ${num(m[3])} bilhões${m[4]}`
       case 'en':
       default:
         return cellText
@@ -912,14 +929,17 @@ function convertSliderRange(cellText: string, lang: LangCode): string {
   }
 
   // Try matching plain percentage, e.g. 2.6%
+  // TODO: Inject values into template string like `${value}%`
   m = cellText.match(/(\*?\*?)([+-]?)(\d+\.?\d{0,2})%(\*?\*?)/)
   if (m) {
     switch (lang) {
       case 'de':
       case 'nb':
         return `${m[1]}${m[2]}${num(m[3])}&nbsp;%${m[4]}`
+      case 'cs':
       case 'es':
       case 'it':
+      case 'pt':
         return `${m[1]}${m[2]}${num(m[3])}%${m[4]}`
       case 'en':
       default:
