@@ -586,19 +586,7 @@ export function convertMarkdownToHtml(context: Context, md: string): string {
 
       // Wrap tables in a div to allow for responsive scrolling behavior
       table: (header, body) => {
-        const mdRelPath = context.getCurrentPage()
-        let classes = 'table-container'
-        if (mdRelPath.includes('tech_removal')) {
-          // XXX: Include a special class for the "CDR Methods" table on the Tech CDR page
-          // in the En-ROADS User Guide so that we can target it in CSS.  Currently we
-          // check the number of rows to differentiate it from the other slider settings
-          // table on that page.
-          const rowTags = [...body.matchAll(/<tr>/g)]
-          if (rowTags.length > 1) {
-            classes += ' removal_methods'
-          }
-        }
-        return `<div class="${classes}"><table><thead>${header}</thead><tbody>${body}</tbody></table></div>`
+        return `<div class="table-container"><table><thead>${header}</thead><tbody>${body}</tbody></table></div>`
       }
     }
   })
