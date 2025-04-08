@@ -49,7 +49,7 @@ This is a valid reference-style link: [page][ref] (with parentheses after) and m
 `)
   })
 
-  it.only('should throw an error if invalid link syntax is detected', () => {
+  it('should throw an error if invalid link syntax is detected', () => {
     const links = `\
 This is a valid normal link: [page](https://climateinteractive.org)
 
