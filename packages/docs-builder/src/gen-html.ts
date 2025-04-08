@@ -595,7 +595,9 @@ export function convertMarkdownToHtml(context: Context, md: string): string {
   })
 
   // Parse the Markdown into HTML
-  return marked.parse(md)
+  return marked.parse(md, {
+    headerIds: false
+  })
 }
 
 /**

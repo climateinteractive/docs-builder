@@ -60,11 +60,6 @@ export function parseMarkdownPageContent(
   relPath: string,
   origMarkdownWithFrontmatter: string
 ): MarkdownPage {
-  // Configure marked.js
-  marked.setOptions({
-    headerIds: false
-  })
-
   // Separate frontmatter from the content
   const origMarkdownSeparated = matter(origMarkdownWithFrontmatter)
   const origMarkdown = origMarkdownSeparated.content

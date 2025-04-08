@@ -130,7 +130,7 @@ describe('convertMarkdownToHtml', () => {
       '<p>This is -CO<sub>2</sub>-</p>\n'
     )
     expect(convertMarkdownToHtml(undefined, '# This is CO2')).toBe(
-      '<h1 id="this-is-co2">This is CO<sub>2</sub></h1>\n'
+      '<h1>This is CO<sub>2</sub></h1>\n'
     )
     expect(convertMarkdownToHtml(undefined, '> This is _CO2_')).toBe(
       '<blockquote>\n<p>This is <em>CO<sub>2</sub></em></p>\n</blockquote>\n'
