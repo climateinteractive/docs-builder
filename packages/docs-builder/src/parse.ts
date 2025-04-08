@@ -38,22 +38,40 @@ type Links = {
  * @return The translated Markdown content.
  */
 export function parseMarkdownPage(context: Context, relPath: string): MarkdownPage {
+  // Read the Markdown file
+  const filePath = resolve(context.config.baseProjDir, relPath)
+  const origMarkdownWithFrontmatter = readTextFile(filePath)
+
+  // Parse the Markdown content
+  return parseMarkdownPageContent(context, relPath, origMarkdownWithFrontmatter)
+}
+
+/**
+ * Parse the given base (English) Markdown page and translate it into the language
+ * associated with the context.
+ *
+ * @param context The language-specific context.
+ * @param relPath The path to the Markdown file, relative to the base project directory.
+ * @param origMarkdownWithFrontmatter The Markdown content with optional frontmatter.
+ * @return The translated Markdown content.
+ */
+export function parseMarkdownPageContent(
+  context: Context,
+  relPath: string,
+  origMarkdownWithFrontmatter: string
+): MarkdownPage {
   // Configure marked.js
   marked.setOptions({
     headerIds: false
   })
 
-  // Set the current page (for error reporting)
-  context.setCurrentPage(relPath)
-
-  // Read the Markdown file
-  const filePath = resolve(context.config.baseProjDir, relPath)
-  const origMarkdownWithFrontmatter = readTextFile(filePath)
-
   // Separate frontmatter from the content
   const origMarkdownSeparated = matter(origMarkdownWithFrontmatter)
   const origMarkdown = origMarkdownSeparated.content
   const frontmatter = origMarkdownSeparated.data
+
+  // Set the current page (for error reporting)
+  context.setCurrentPage(relPath)
 
   // Append synthesized link info for glossary references so that source files can
   // use `[link text][glossary_term]` without manually defining a reference for
@@ -445,7 +463,7 @@ function processToken(context: Context, state: ProcessState, token: marked.Token
         let msg = 'Detected two or more spaces at the end of a text line.'
         msg += ' Markdown interprets this as a line break, which can be surprising.'
         msg += ' If the spaces were added unintentionally, remove the extra spaces.'
-        msg += ' If you do want a line break, use an explicit HTML `<br/>` tag instead.'
+        msg += ` If you do want a line break, use an explicit HTML 'br' tag instead.`
         throw new Error(context.getScopedMessage(msg))
       }
       default:
