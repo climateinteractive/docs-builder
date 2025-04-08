@@ -517,7 +517,6 @@ function addBlockForTokens(
       sep = '\n\n'
     }
     const blockText = blockParts.join(sep)
-    checkForInvalidLinkSyntax(context, blockText)
     context.addBlock(localBlockId, blockText)
     return tokens
   } else {
@@ -526,7 +525,6 @@ function addBlockForTokens(
     const blockText = context.getTranslatedBlockText(fullBlockId)
     if (blockText) {
       // Parse the translated tokens and insert them
-      checkForInvalidLinkSyntax(context, blockText)
       // XXX: If there is more than one token (even if some are whitespace only), we
       // need to include extra newlines after the last block, otherwise marked will
       // not parse the text correctly
@@ -538,23 +536,6 @@ function addBlockForTokens(
       console.warn(`WARNING: No translation found for lang=${context.lang} id=${fullBlockId}`)
       return tokens
     }
-  }
-}
-
-/**
- * Throw an error if the given text contains invalid link syntax.
- */
-function checkForInvalidLinkSyntax(context: Context, md: string): void {
-  const invalidLinkRegExp = /\[([^\]]+)\]\s+\(([^)]+)\)|\[([^\]]+)\]\s+\[([^\]]+)\]/g
-  const matches = md.match(invalidLinkRegExp)
-  if (matches) {
-    let msg = 'Detected invalid link syntax:\n'
-    for (const match of matches) {
-      msg += `${match}\n`
-    }
-    msg +=
-      'To fix, ensure there are no spaces between link text and link url/reference, for example: [text](url) or [text][ref]'
-    throw new Error(context.getScopedMessage(msg))
   }
 }
 

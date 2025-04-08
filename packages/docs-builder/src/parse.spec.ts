@@ -275,49 +275,4 @@ there
       'Unresolved reference-style link found for lang=en link=[This is a link][unknown_ref]'
     )
   })
-
-  it('should throw an error if invalid link syntax is detected', () => {
-    const links = `\
-This is a valid normal link: [page](https://climateinteractive.org)
-
-This is a valid reference-style link: [page][ref]
-
-This is an invalid normal link: [page] (https://climateinteractive.org)
-
-This is an invalid reference-style link: [page] [ref]
-`
-
-    const md = `\
-# <!-- section:section_1 -->Section 1
-
-<!-- begin-def:block_1 -->
-
-${links}
-
-<!-- end-def -->
-
-[ref]: https://climateinteractive.org
-`
-
-    function expectedMsg(lang: string) {
-      const langPart = lang === 'en' ? '' : `lang=${lang} `
-      return `\
-Detected invalid link syntax:
-[page] (https://climateinteractive.org)
-[page] [ref]
-To fix, ensure there are no spaces between link text and link url/reference, for example: [text](url) or [text][ref] (${langPart}page=page_1.md scope=section_1)`
-    }
-
-    // Verify that an error is thrown if the English content contains invalid link syntax
-    const enContext = new Context(config, 'en')
-    expect(() => parseMarkdownPageContent(enContext, 'page_1.md', md)).toThrow(expectedMsg('en'))
-
-    // Verify that an error is thrown if the translated content contains invalid link syntax
-    const deBlocks = new Map([
-      ['section_1__title', 'Section 1'],
-      ['section_1__block_1', links]
-    ])
-    const deContext = new Context(config, 'de', undefined, deBlocks)
-    expect(() => parseMarkdownPageContent(deContext, 'page_1.md', md)).toThrow(expectedMsg('de'))
-  })
 })
