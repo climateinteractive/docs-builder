@@ -107,9 +107,11 @@ To fix, ensure there are no spaces between link text and link url/reference, for
 
 describe('subscriptify', () => {
   it('should convert chemical formulas', () => {
+    expect(subscriptify('CO2')).toBe('CO<sub>2</sub>')
     expect(subscriptify('This is -CO2-')).toBe('This is -CO<sub>2</sub>-')
     expect(subscriptify('This is -CF4-')).toBe('This is -CF<sub>4</sub>-')
     expect(subscriptify('This is -CH4-')).toBe('This is -CH<sub>4</sub>-')
+    expect(subscriptify('This is -H2-')).toBe('This is -H<sub>2</sub>-')
     expect(subscriptify('This is -H2O-')).toBe('This is -H<sub>2</sub>O-')
     expect(subscriptify('This is -N2O-')).toBe('This is -N<sub>2</sub>O-')
     expect(subscriptify('This is -NF3-')).toBe('This is -NF<sub>3</sub>-')

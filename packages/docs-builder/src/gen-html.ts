@@ -528,7 +528,7 @@ const subscriptMap = new Map([
   ['CO2', 'CO<sub>2</sub>'],
   ['CF4', 'CF<sub>4</sub>'],
   ['CH4', 'CH<sub>4</sub>'],
-  ['H2O', 'H<sub>2</sub>O'],
+  ['H2', 'H<sub>2</sub>'],
   ['N2O', 'N<sub>2</sub>O'],
   ['NF3', 'NF<sub>3</sub>'],
   ['O2', 'O<sub>2</sub>'],
@@ -607,6 +607,7 @@ export function convertMarkdownToHtml(context: Context, md: string): string {
  *   CO2
  *   CF4
  *   CH4
+ *   H2
  *   H2O
  *   N2O
  *   NF3
@@ -614,12 +615,16 @@ export function convertMarkdownToHtml(context: Context, md: string): string {
  *   O3
  *   SF6
  *
+ * Note that we only convert in the case where the chemical name is either at the
+ * beginning of a line or not preceded by a letter or digit, so that we convert
+ * things like "H2" or "non-H2" but not "CH3CH2CH3".
+ *
  * @param s The input string.
  * @return A new string containing subscripted chemical names.
  */
 export function subscriptify(s: string): string {
-  return s.replace(/(CO2|CF4|CH4|H2O|N2O|NF3|O2|O3|SF6)/g, (_m, m1) => {
-    return subscriptMap.get(m1)
+  return s.replace(/(^|[^a-zA-Z0-9])(CO2|CF4|CH4|H2|N2O|NF3|O2|O3|SF6)/g, (_m, m1, m2) => {
+    return `${m1 || ''}${subscriptMap.get(m2)}`
   })
 }
 
