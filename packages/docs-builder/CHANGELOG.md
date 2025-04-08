@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.5](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.3.4...docs-builder-v1.3.5) (2025-04-08)
+
+
+### Bug Fixes
+
+* include H2 in list of automatically subscripted chemicals ([#96](https://github.com/climateinteractive/docs-builder/issues/96)) ([b8158e8](https://github.com/climateinteractive/docs-builder/commit/b8158e8d13fc7600b9273f678571f415c8d1b899)), closes [#95](https://github.com/climateinteractive/docs-builder/issues/95)
+* throw error if invalid link syntax is detected ([#93](https://github.com/climateinteractive/docs-builder/issues/93)) ([806e1cf](https://github.com/climateinteractive/docs-builder/commit/806e1cf043fdaa48e3c40bb425fd09792c05e46f)), closes [#91](https://github.com/climateinteractive/docs-builder/issues/91)
+
 ## [1.3.4](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.3.3...docs-builder-v1.3.4) (2024-12-12)
 
 
