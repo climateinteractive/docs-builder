@@ -144,6 +144,9 @@ export function generateHtml(context: Context, mdRelPath: string, mdPage: Markdo
   // Convert the Markdown content to HTML
   const body = convertMarkdownToHtml(context, md)
 
+  // Check for evidence of invalid Markdown link syntax that remains in the generated HTML
+  checkForInvalidLinkSyntax(context, body)
+
   // Save the names of the `<head>` fragments to include
   const headFragments = mdPage.frontmatter?.fragments?.head || []
 
@@ -592,7 +595,9 @@ export function convertMarkdownToHtml(context: Context, md: string): string {
   })
 
   // Parse the Markdown into HTML
-  return marked.parse(md)
+  return marked.parse(md, {
+    headerIds: false
+  })
 }
 
 /**
@@ -616,4 +621,31 @@ export function subscriptify(s: string): string {
   return s.replace(/(CO2|CF4|CH4|H2O|N2O|NF3|O2|O3|SF6)/g, (_m, m1) => {
     return subscriptMap.get(m1)
   })
+}
+
+// This will match cases where a space in the Markdown link syntax caused the link parts
+// to be converted to separate elements in the HTML output, for example:
+//   Markdown:  [text] (https://example.com)
+//   HTML:      [text] (<a href="https://example.com">https://example.com</a>)
+//   Markdown:  [text] [ref]
+//   HTML (en): [text] <a href="https://climateinteractive.org">ref</a>
+//   HTML (xx): [text] [ref]
+// Note that the generated HTML in the second example is different for the English and
+// non-English cases (due to different parsing code paths), so we need to detect both.
+const invalidLinkRegExp = /\[([^\]]+)\]\s+(\(?<a\s\w+|\[([^\]]+)\])/g
+
+/**
+ * Throw an error if the given HTML text contains evidence ofinvalid Markdown link syntax.
+ */
+function checkForInvalidLinkSyntax(context: Context, md: string): void {
+  const matches = md.match(invalidLinkRegExp)
+  if (matches) {
+    let msg = 'Detected invalid Markdown link syntax in the generated HTML:\n'
+    for (const match of matches) {
+      msg += `${match.replace('<', '&lt;')}\n`
+    }
+    msg +=
+      'To fix, ensure there are no spaces between link text and link url/reference, for example: [text](url) or [text][ref]'
+    throw new Error(context.getScopedMessage(msg))
+  }
 }
