@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.6](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.3.5...docs-builder-v1.3.6) (2025-06-11)
+
+
+### Bug Fixes
+
+* remove prettier as dependency in docs-builder package and make it a top-level dev dependency ([#98](https://github.com/climateinteractive/docs-builder/issues/98)) ([eeab8db](https://github.com/climateinteractive/docs-builder/commit/eeab8db60c5fd38b8ea36a39e3eac4aceca418a8)), closes [#97](https://github.com/climateinteractive/docs-builder/issues/97)
+
 ## [1.3.5](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.3.4...docs-builder-v1.3.5) (2025-04-08)
 
 
