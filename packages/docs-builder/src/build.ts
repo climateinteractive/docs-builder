@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url'
 
 import { findUp, pathExists } from 'find-up'
 import glob from 'glob'
+import postcss from 'postcss'
+import postcssRtlCss from 'postcss-rtlcss'
 import semverCompare from 'semver-compare'
 
 import { Assets } from './assets'
@@ -67,8 +69,19 @@ export async function buildDocs(options: BuildOptions): Promise<void> {
  * @param enContext The base (English) context.
  */
 async function buildLangs(enContext: Context): Promise<void> {
-  // Process all pages for each supported language
+  // Process the CSS files to automatically generate RTL styles
   const config = enContext.config
+  const cssFiles: Map<string, string> = new Map()
+  function processCss(sourceDir: string, fileName: string): void {
+    const cssPath = resolvePath(sourceDir, fileName)
+    const srcCssContent = readTextFile(cssPath)
+    const outCssContent = postcss([postcssRtlCss()]).process(srcCssContent).css
+    cssFiles.set(fileName, outCssContent)
+  }
+  processCss(config.sourceDir, 'base.css')
+  processCss(config.baseProjDir, 'project.css')
+
+  // Process all pages for each supported language
   const localizationDir = resolvePath(config.baseProjDir, 'localization')
   const langConfigs: LangConfig[] = []
   langConfigs.push({ code: 'en', version: config.version })
@@ -88,7 +101,7 @@ async function buildLangs(enContext: Context): Promise<void> {
 
     // Build the docs for this language
     try {
-      await buildLang(context, langConfig)
+      await buildLang(context, langConfig, cssFiles)
 
       // Generate `en/docs.po`, which contains the base English strings.
       // We only need to generate this if this project is translated (has
@@ -109,8 +122,13 @@ async function buildLangs(enContext: Context): Promise<void> {
  *
  * @param context The language-specific context.
  * @param langConfig The version configuration for the language.
+ * @param cssFiles The map of CSS files to be copied to the output directory.
  */
-async function buildLang(context: Context, langConfig: LangConfig): Promise<void> {
+async function buildLang(
+  context: Context,
+  langConfig: LangConfig,
+  cssFiles: Map<string, string>
+): Promise<void> {
   // Check the version of the translation for this language
   const baseVersion = context.config.version
   let useSavedVersion: boolean
@@ -166,8 +184,13 @@ async function buildLang(context: Context, langConfig: LangConfig): Promise<void
     copyToBase(await moduleDir('lunr-languages'), 'lunr.stemmer.support.js')
     copyToBase(await moduleDir('mark.js', 'dist'), 'mark.min.js')
 
-    // Copy project-specific CSS
-    copyToBase(context.config.baseProjDir, 'project.css')
+    // Write the preprocessed CSS files
+    function writeCssFile(fileName: string): void {
+      const cssContent = cssFiles.get(fileName)
+      assets.writeWithHash(cssContent, fileName, context.outDir)
+    }
+    writeCssFile('base.css')
+    writeCssFile('project.css')
 
     // Copy all other assets from the "shared src" directory.  Note that glob paths
     // have forward slashes only, so convert backslashes here.
@@ -175,7 +198,7 @@ async function buildLang(context: Context, langConfig: LangConfig): Promise<void
     const sharedSrcFiles = glob.sync(`${sharedSrcPath}/*`, { nodir: true })
     for (const f of sharedSrcFiles) {
       const relPath = f.replace(`${sharedSrcPath}/`, '')
-      if (!relPath.endsWith('.html')) {
+      if (!relPath.endsWith('.html') && !relPath.endsWith('base.css')) {
         copyToBase(context.config.sourceDir, relPath)
       }
     }
