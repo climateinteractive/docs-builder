@@ -357,6 +357,15 @@ export function writeHtmlFile(
     switch (id) {
       case 'LANG':
         return context.lang
+      case 'LANG_DIR':
+        switch (context.lang) {
+          case 'ar':
+          case 'fa':
+          case 'he':
+            return 'rtl'
+          default:
+            return 'ltr'
+        }
       case 'BASE_NAME':
         return baseName
       case 'TOP_LEVEL_TITLE':

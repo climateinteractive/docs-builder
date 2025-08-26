@@ -10,6 +10,6 @@
     "ci:build": "run-s clean build"
   },
   "devDependencies": {
-    "@climateinteractive/docs-builder": "^1.0.0"
+    "@climateinteractive/docs-builder": "workspace:*"
   }
 }
