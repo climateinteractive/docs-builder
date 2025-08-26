@@ -634,9 +634,17 @@ footer {
 
   .responsive-sidebar-visible .content-container {
     position: fixed;
-    left: 300px;
     width: 100%;
   }
+
+  /* rtl:begin:ignore */
+  .responsive-sidebar-visible[dir='ltr'] .content-container {
+    left: 300px;
+  }
+  .responsive-sidebar-visible[dir='rtl'] .content-container {
+    right: 300px;
+  }
+  /* rtl:end:ignore */
 
   .content-inner-container {
     margin-top: 0;
