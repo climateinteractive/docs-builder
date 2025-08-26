@@ -3,11 +3,10 @@
 import { dirname, join as joinPath, resolve as resolvePath } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import postcss from 'postcss'
-import postcssRtlCss from 'postcss-rtlcss'
-
 import { findUp, pathExists } from 'find-up'
 import glob from 'glob'
+import postcss from 'postcss'
+import postcssRtlCss from 'postcss-rtlcss'
 import semverCompare from 'semver-compare'
 
 import { Assets } from './assets'
