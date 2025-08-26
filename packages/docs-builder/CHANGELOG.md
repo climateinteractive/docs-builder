@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.3.6...docs-builder-v1.4.0) (2025-08-26)
+
+
+### Features
+
+* add support for right-to-left languages ([#101](https://github.com/climateinteractive/docs-builder/issues/101)) ([a99e72b](https://github.com/climateinteractive/docs-builder/commit/a99e72b89402ea2bc01db48d49aab208138aaecd)), closes [#100](https://github.com/climateinteractive/docs-builder/issues/100)
+
 ## [1.3.6](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.3.5...docs-builder-v1.3.6) (2025-06-11)
 
 
