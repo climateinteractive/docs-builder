@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.4.0...docs-builder-v1.4.1) (2025-12-02)
+
+
+### Bug Fixes
+
+* remove unused ps-tree dependency ([#106](https://github.com/climateinteractive/docs-builder/issues/106)) ([77841c4](https://github.com/climateinteractive/docs-builder/commit/77841c4f544b44f3e138067e90e1e08357bf6397)), closes [#105](https://github.com/climateinteractive/docs-builder/issues/105)
+
 ## [1.4.0](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.3.6...docs-builder-v1.4.0) (2025-08-26)
 
 
