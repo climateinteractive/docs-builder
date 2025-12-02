@@ -2,6 +2,10 @@ packages:
   - packages/*
   - examples/*
 
+# Allow certain packages to run postinstall scripts
+onlyBuiltDependencies:
+  - puppeteer
+
 # Prevent pnpm from automatically installing unresolved peer dependencies
 autoInstallPeers: false
 
