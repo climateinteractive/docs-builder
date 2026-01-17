@@ -4,10 +4,10 @@ import { dirname, join as joinPath, resolve as resolvePath } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { findUp, pathExists } from 'find-up'
-import glob from 'glob'
 import postcss from 'postcss'
 import postcssRtlCss from 'postcss-rtlcss'
 import semverCompare from 'semver-compare'
+import { globSync } from 'tinyglobby'
 
 import { Assets } from './assets'
 import type { BuildMode, LangConfig } from './config'
@@ -195,9 +195,8 @@ async function buildLang(
     // Copy all other assets from the "shared src" directory.  Note that glob paths
     // have forward slashes only, so convert backslashes here.
     const sharedSrcPath = context.config.sourceDir.replaceAll('\\', '/')
-    const sharedSrcFiles = glob.sync(`${sharedSrcPath}/*`, { nodir: true })
-    for (const f of sharedSrcFiles) {
-      const relPath = f.replace(`${sharedSrcPath}/`, '')
+    const sharedSrcFiles = globSync(`${sharedSrcPath}/*`, { cwd: sharedSrcPath, onlyFiles: true })
+    for (const relPath of sharedSrcFiles) {
       if (!relPath.endsWith('.html') && !relPath.endsWith('base.css')) {
         copyToBase(context.config.sourceDir, relPath)
       }
@@ -215,9 +214,8 @@ async function buildLang(
       '/'
     )
     const langPath = `${localizationDir}/${lang}`
-    const files = glob.sync(`${langPath}/images/**/*`, { nodir: true })
-    for (const f of files) {
-      const relPath = f.replace(`${langPath}/`, '')
+    const files = globSync(`${langPath}/images/**/*`, { cwd: langPath, onlyFiles: true })
+    for (const relPath of files) {
       assets.copyWithHash(resolvePath(langPath), relPath, context.outDir)
     }
   }
