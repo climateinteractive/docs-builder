@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.4.1](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.4.0...docs-builder-v1.4.1) (2026-01-17)
+
+
+### Bug Fixes
+
+* remove unused ps-tree dependency ([#106](https://github.com/climateinteractive/docs-builder/issues/106)) ([77841c4](https://github.com/climateinteractive/docs-builder/commit/77841c4f544b44f3e138067e90e1e08357bf6397)), closes [#105](https://github.com/climateinteractive/docs-builder/issues/105)
+* replace glob dependency with tinyglobby ([#110](https://github.com/climateinteractive/docs-builder/issues/110)) ([d08bcd8](https://github.com/climateinteractive/docs-builder/commit/d08bcd8a091531f9e3a8eec7451c43b6d153a876)), closes [#108](https://github.com/climateinteractive/docs-builder/issues/108)
+* upgrade chokidar to 5.0.0 ([#111](https://github.com/climateinteractive/docs-builder/issues/111)) ([c7feccf](https://github.com/climateinteractive/docs-builder/commit/c7feccfe9b02be9e3e94fe8a5ee272ae413a712e)), closes [#109](https://github.com/climateinteractive/docs-builder/issues/109)
+
 ## [1.4.0](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.3.6...docs-builder-v1.4.0) (2025-08-26)
 
 
