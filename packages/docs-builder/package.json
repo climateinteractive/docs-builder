@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@compodoc/live-server": "^1.2.3",
-    "chokidar": "^3.5.3",
+    "chokidar": "^5.0.0",
     "find-up": "^6.3.0",
     "gettext-parser": "^5.0.0",
     "gray-matter": "^4.0.3",
