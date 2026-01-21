@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.4.1...docs-builder-v1.4.2) (2026-01-21)
+
+
+### Bug Fixes
+
+* upgrade puppeteer to 24.x + enable caching in GH Actions workflows ([#115](https://github.com/climateinteractive/docs-builder/issues/115)) ([101af10](https://github.com/climateinteractive/docs-builder/commit/101af101bdaee0de32ff9eb4b32de44947757f42)), closes [#114](https://github.com/climateinteractive/docs-builder/issues/114)
+
 ## [1.4.1](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.4.0...docs-builder-v1.4.1) (2026-01-17)
 
 
