@@ -1,1 +1,3 @@
+.cache
+.claude/**/*.local.json
 node_modules

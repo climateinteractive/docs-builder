@@ -58,6 +58,12 @@ jobs:
           # restore-keys: |
           #   pnpm-store-${{ runner.os }}-
 
+      - name: Enable Puppeteer cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/puppeteer
+          key: puppeteer-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+
       # Save the auth token so that the build can access private packages from
       # (and publish packages to) the GitHub Packages registry
       - name: Configure npm auth tokens
@@ -68,10 +74,10 @@ jobs:
         run: |
           pnpm install
 
-      # XXX: Workaround for Puppeteer issues
       - name: Install Chromium for Puppeteer
         run: |
-          node ./packages/docs-builder/node_modules/puppeteer/install.js
+          # Note: This will be a no-op if Chromium was already saved to the Puppeteer cache
+          pnpm dlx puppeteer browsers install
 
       - name: Build
         id: build
