@@ -44,6 +44,12 @@ jobs:
         run: |
           echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
 
+      - name: Enable Puppeteer cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/puppeteer
+          key: puppeteer-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+
       - name: Enable pnpm cache
         uses: actions/cache@v4
         with:
@@ -62,10 +68,10 @@ jobs:
         run: |
           pnpm install
 
-      # XXX: Workaround for Puppeteer issues
       - name: Install Chromium for Puppeteer
         run: |
-          node ./packages/docs-builder/node_modules/puppeteer/install.js
+          # Note: This will be a no-op if Chromium was already saved to the Puppeteer cache
+          pnpm dlx puppeteer browsers install
 
       - name: Build
         id: build
