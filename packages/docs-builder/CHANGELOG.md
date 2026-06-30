@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.3](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.4.2...docs-builder-v1.4.3) (2026-06-30)
+
+
+### Bug Fixes
+
+* add endonym mappings for Korean and Indonesian languages ([#118](https://github.com/climateinteractive/docs-builder/issues/118)) ([0655b55](https://github.com/climateinteractive/docs-builder/commit/0655b559f74472b4553063d2b4444d90211eb595)), closes [#117](https://github.com/climateinteractive/docs-builder/issues/117)
+
 ## [1.4.2](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.4.1...docs-builder-v1.4.2) (2026-01-21)
 
 
