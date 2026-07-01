@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.4](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.4.3...docs-builder-v1.4.4) (2026-07-01)
+
+
+### Bug Fixes
+
+* correct block ID regex so that an error is thrown when invalid characters are included ([#121](https://github.com/climateinteractive/docs-builder/issues/121)) ([a70f72a](https://github.com/climateinteractive/docs-builder/commit/a70f72a303fdfb60e9bfc20b684eba534ab17d81)), closes [#120](https://github.com/climateinteractive/docs-builder/issues/120)
+
 ## [1.4.3](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.4.2...docs-builder-v1.4.3) (2026-06-30)
 
 
