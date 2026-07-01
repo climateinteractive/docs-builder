@@ -182,6 +182,17 @@ Hello
     )
   })
 
+  it('should throw an error if a section command is used with an invalid identifier', () => {
+    const md = `\
+<!-- section:foo_50_%_bar -->
+Hello
+`
+    const enContext = new Context(config, 'en')
+    expect(() => parseMarkdownPageContent(enContext, 'page_1.md', md)).toThrow(
+      `Identifier (foo_50_%_bar) must contain only lowercase letters, digits, and underscores (page=page_1.md)`
+    )
+  })
+
   it('should throw an error if a begin-def command is not closed', () => {
     const md = `\
 <!-- begin-def:example_1 -->
