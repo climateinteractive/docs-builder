@@ -173,7 +173,11 @@ function parseCommand(context: Context, token: marked.Token): Command | undefine
     return undefined
   }
 
-  const m = raw.match(/<!--\s*([a-z-]+)(\[hidden\])?:?(\w+)?\s*-->/)
+  // Note: the identifier is captured as a run of non-whitespace characters (rather
+  // than `\w+`) so that an id containing invalid characters (e.g. `%`) is still
+  // captured here and caught by the validation below, instead of causing the whole
+  // match to fail and the command to be silently ignored
+  const m = raw.match(/<!--\s*([a-z-]+)(\[hidden\])?:?(\S+)?\s*-->/)
   if (!m) {
     return undefined
   }
