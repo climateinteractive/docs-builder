@@ -3,10 +3,10 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import liveServer from '@compodoc/live-server'
 import chokidar from 'chokidar'
+import open from 'open'
 
-import { buildDocs, prepareOutDir, writeOutputFile } from '../dist/index.js'
+import { buildDocs, prepareOutDir, startDevServer, writeOutputFile } from '../dist/index.js'
 
 // TODO: For now assume the current directory is the root; need to make this configurable
 const rootDir = process.cwd()
@@ -158,13 +158,19 @@ async function main() {
     watch()
 
     // Start local server
-    liveServer.start({
-      port: 8100,
-      // TODO: Make this configurable
-      open: '/public/en/latest/index.html',
-      watch: 'timestamp',
-      logLevel: 0
+    const port = 8100
+    // TODO: Make this configurable
+    const openPath = '/public/en/latest/index.html'
+    await startDevServer({
+      rootDir,
+      port,
+      watchPath: 'timestamp'
     })
+
+    // Open the docs in the default browser
+    const url = `http://localhost:${port}${openPath}`
+    console.log(`\nLocal server running at ${url}`)
+    await open(url)
   } else {
     // Build once
     await build({
