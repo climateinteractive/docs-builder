@@ -2,6 +2,7 @@
 
 import type { Server, ServerResponse } from 'http'
 import { createServer } from 'http'
+import { connect } from 'net'
 import { resolve as resolvePath } from 'path'
 
 import chokidar from 'chokidar'
@@ -48,14 +49,71 @@ export function injectDevReloadScript(html: string): string {
   return `${html.slice(0, index)}${devReloadScriptTag}\n${html.slice(index)}`
 }
 
+/** The default number of ports that are tried before giving up. */
+const defaultMaxPortAttempts = 10
+
+/** The addresses that are checked when looking for a server on a port. */
+const loopbackAddresses = ['127.0.0.1', '::1']
+
+/** The number of milliseconds to wait for a connection when checking a port. */
+const portProbeTimeout = 500
+
+/**
+ * Return whether a server accepts a connection on the given address and port.
+ *
+ * @param host The address to connect to.
+ * @param port The port to connect to.
+ * @returns A promise that is resolved with true if the connection was accepted.
+ */
+function canConnect(host: string, port: number): Promise<boolean> {
+  return new Promise(resolve => {
+    const socket = connect({ host, port })
+    function finish(connected: boolean): void {
+      socket.destroy()
+      resolve(connected)
+    }
+    socket.setTimeout(portProbeTimeout)
+    socket.on('connect', () => finish(true))
+    // A connection that neither succeeds nor is refused means the port is not usable
+    // for a local dev server either way
+    socket.on('timeout', () => finish(true))
+    socket.on('error', () => finish(false))
+  })
+}
+
+/**
+ * Return whether a server is already listening on the given port.
+ *
+ * Attempting to listen is not enough on its own.  On macOS, a server that is bound to a
+ * single address (for example, another dev server on `0.0.0.0`) does not prevent this
+ * server from binding the same port on a different address, so both end up running and
+ * the browser reaches whichever one `localhost` happens to resolve to.  Connecting to
+ * the loopback addresses catches that case.
+ *
+ * @param port The port to check.
+ * @returns A promise that is resolved with true if the port is already being used.
+ */
+async function isPortInUse(port: number): Promise<boolean> {
+  const results = await Promise.all(loopbackAddresses.map(host => canConnect(host, port)))
+  return results.some(inUse => inUse)
+}
+
 /** The options for starting the local development server. */
 export interface DevServerOptions {
   /** The absolute path of the directory that is served. */
   rootDir: string
-  /** The port to listen on.  Use zero to listen on an arbitrary free port. */
+  /**
+   * The preferred port to listen on.  If the port is already in use, the following
+   * ports are tried in turn.  Use zero to listen on an arbitrary free port.
+   */
   port: number
   /** The path (relative to `rootDir`) of the file that triggers a reload when changed. */
   watchPath: string
+  /**
+   * The number of ports that are tried, starting at `port`, before giving up.  Defaults
+   * to 10.  This is ignored when `port` is zero.
+   */
+  maxPortAttempts?: number
 }
 
 /** A running local development server. */
@@ -81,11 +139,16 @@ export interface DevServer {
  * Reload notifications are delivered using server-sent events, which are supported
  * natively by the browser, so no WebSocket library is needed.
  *
+ * If the preferred port is already in use (for example, when a dev server is already
+ * running for a different project), the following ports are tried in turn, so use the
+ * `port` property of the returned server when reporting or opening the URL.
+ *
  * @param options The dev server options.
  * @returns A promise that is resolved with the running server once it is listening
  * and watching for changes.
+ * @throws An error if no free port is found within the allowed number of attempts.
  */
-export function startDevServer(options: DevServerOptions): Promise<DevServer> {
+export async function startDevServer(options: DevServerOptions): Promise<DevServer> {
   // Keep track of the connected browser tabs so that each one can be notified
   // when a build finishes
   const clients: Set<ServerResponse> = new Set()
@@ -137,17 +200,87 @@ export function startDevServer(options: DevServerOptions): Promise<DevServer> {
     await closed
   }
 
-  // Wait for the server and the watcher to be ready before resolving, so that a
-  // build that finishes immediately after startup is not missed
-  return new Promise((resolve, reject) => {
-    server.on('error', reject)
-    watcher.on('error', reject)
-    watcher.on('ready', () => {
-      server.listen(options.port, () => {
-        const address = server.address()
-        const port = typeof address === 'object' && address !== null ? address.port : options.port
-        resolve({ port, close })
-      })
+  /**
+   * Wait for the watcher to see the existing files, so that a build that finishes
+   * immediately after startup is not missed.
+   */
+  function watcherReady(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      watcher.once('error', reject)
+      watcher.once('ready', resolve)
     })
-  })
+  }
+
+  /**
+   * Listen on the given port.
+   *
+   * @param port The port to listen on.
+   * @returns A promise that is resolved with the port that the server is listening on,
+   * or rejected if the server could not be started.
+   */
+  function listen(port: number): Promise<number> {
+    return new Promise((resolve, reject) => {
+      function onError(error: Error): void {
+        server.off('listening', onListening)
+        reject(error)
+      }
+      function onListening(): void {
+        server.off('error', onError)
+        // Errors that arrive after startup were never reported, and stopping the dev
+        // session for one would be worse than carrying on
+        server.on('error', () => {})
+        const address = server.address()
+        resolve(typeof address === 'object' && address !== null ? address.port : port)
+      }
+      server.once('error', onError)
+      server.once('listening', onListening)
+      server.listen(port)
+    })
+  }
+
+  /**
+   * Listen on the preferred port, falling back on the ports that follow it if it is
+   * already being used by another server.
+   *
+   * @returns A promise that is resolved with the port that the server is listening on.
+   */
+  async function listenOnAvailablePort(): Promise<number> {
+    // When port zero is requested, the operating system chooses a port that is free,
+    // so there is nothing to fall back on
+    if (options.port === 0) {
+      return listen(0)
+    }
+
+    const maxAttempts = options.maxPortAttempts ?? defaultMaxPortAttempts
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      const port = options.port + attempt
+      if (await isPortInUse(port)) {
+        continue
+      }
+      try {
+        return await listen(port)
+      } catch (error) {
+        // Another server may have claimed the port between the check and the attempt
+        if ((error as NodeJS.ErrnoException).code !== 'EADDRINUSE') {
+          throw error
+        }
+      }
+    }
+
+    const lastPort = options.port + maxAttempts - 1
+    throw new Error(
+      `Failed to find an available port (tried ports ${options.port} through ${lastPort})`
+    )
+  }
+
+  try {
+    await watcherReady()
+    const port = await listenOnAvailablePort()
+    return { port, close }
+  } catch (error) {
+    // The watcher is already running at this point, so close it before reporting the
+    // failure, otherwise it would keep the process alive
+    await watcher.close()
+    throw error
+  }
 }

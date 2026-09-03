@@ -157,18 +157,23 @@ async function main() {
     // Set up a file watcher so that we rebuild any time a source file is changed
     watch()
 
-    // Start local server
-    const port = 8100
-    // TODO: Make this configurable
+    // Start local server.  Note that if the preferred port is already in use (for
+    // example, when a dev server is already running for a different project), the
+    // server will listen on the next available port, so use the port that it reports.
+    // TODO: Make the port and the path configurable
+    const preferredPort = 8100
     const openPath = '/public/en/latest/index.html'
-    await startDevServer({
+    const devServer = await startDevServer({
       rootDir,
-      port,
+      port: preferredPort,
       watchPath: 'timestamp'
     })
+    if (devServer.port !== preferredPort) {
+      console.log(`\nPort ${preferredPort} is already in use; using port ${devServer.port} instead`)
+    }
 
     // Open the docs in the default browser
-    const url = `http://localhost:${port}${openPath}`
+    const url = `http://localhost:${devServer.port}${openPath}`
     console.log(`\nLocal server running at ${url}`)
     await open(url)
   } else {
