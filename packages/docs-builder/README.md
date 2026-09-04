@@ -27,6 +27,15 @@ Once the `.npmrc` file is updated, you can install the package the usual way:
 npm install @climateinteractive/docs-builder
 ```
 
+Note that PDF files are generated using [Puppeteer](https://pptr.dev), which is
+declared as a peer dependency so that your project can control which version is
+used (many projects already depend on Puppeteer for end-to-end tests), so you
+will need to install it alongside `docs-builder`:
+
+```sh
+npm install --save-dev puppeteer
+```
+
 ## Usage
 
 ### Command Line

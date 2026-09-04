@@ -47,6 +47,9 @@ importers:
       '@climateinteractive/docs-builder':
         specifier: workspace:*
         version: link:../../packages/docs-builder
+      puppeteer:
+        specifier: ^25.10.0
+        version: 25.10.0
 
   packages/docs-builder:
     dependencies:
@@ -83,9 +86,6 @@ importers:
       postcss-rtlcss:
         specifier: ^5.7.1
         version: 5.7.1(postcss@8.5.6)
-      puppeteer:
-        specifier: ^25.10.0
-        version: 25.10.0
       rev-hash:
         specifier: ^3.0.0
         version: 3.0.0
@@ -108,6 +108,9 @@ importers:
       '@types/node':
         specifier: ^22.20.1
         version: 22.20.1
+      puppeteer:
+        specifier: ^25.10.0
+        version: 25.10.0
 
 packages:
 
