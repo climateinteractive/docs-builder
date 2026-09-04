@@ -3,10 +3,16 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import liveServer from '@compodoc/live-server'
 import chokidar from 'chokidar'
+import open from 'open'
 
-import { buildDocs, createBuildQueue, prepareOutDir, writeOutputFile } from '../dist/index.js'
+import {
+  buildDocs,
+  createBuildQueue,
+  prepareOutDir,
+  startDevServer,
+  writeOutputFile
+} from '../dist/index.js'
 
 // TODO: For now assume the current directory is the root; need to make this configurable
 const rootDir = process.cwd()
@@ -169,14 +175,25 @@ async function main() {
     // Set up a file watcher so that we rebuild any time a source file is changed
     watch()
 
-    // Start local server
-    liveServer.start({
-      port: 8100,
-      // TODO: Make this configurable
-      open: '/public/en/latest/index.html',
-      watch: 'timestamp',
-      logLevel: 0
+    // Start local server.  Note that if the preferred port is already in use (for
+    // example, when a dev server is already running for a different project), the
+    // server will listen on the next available port, so use the port that it reports.
+    // TODO: Make the port and the path configurable
+    const preferredPort = 8100
+    const openPath = '/public/en/latest/index.html'
+    const devServer = await startDevServer({
+      rootDir,
+      port: preferredPort,
+      watchPath: 'timestamp'
     })
+    if (devServer.port !== preferredPort) {
+      console.log(`\nPort ${preferredPort} is already in use; using port ${devServer.port} instead`)
+    }
+
+    // Open the docs in the default browser
+    const url = `http://localhost:${devServer.port}${openPath}`
+    console.log(`\nLocal server running at ${url}`)
+    await open(url)
   } else {
     // Build once
     await build({

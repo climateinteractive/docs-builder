@@ -6,6 +6,7 @@ import { marked } from 'marked'
 
 import type { Assets } from './assets'
 import type { Context } from './context'
+import { injectDevReloadScript } from './dev-server'
 import { readTextFile, writeOutputFile } from './fs'
 import { plainTextFromTokens } from './parse'
 import type { TocPageItem, TocSection } from './toc'
@@ -411,9 +412,13 @@ export function writeHtmlFile(
     }
   })
 
+  // In development mode, add the script that reloads the page when the local dev
+  // server sees that a build has finished
+  const finalHtml = context.config.mode === 'development' ? injectDevReloadScript(html) : html
+
   // Write the HTML file
   const htmlPath = resolvePath(context.outDir, htmlPage.relPath)
-  writeOutputFile(htmlPath, html)
+  writeOutputFile(htmlPath, finalHtml)
 }
 
 export function writeCompleteHtmlFile(
