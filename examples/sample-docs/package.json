@@ -10,6 +10,7 @@
     "ci:build": "run-s clean build"
   },
   "devDependencies": {
-    "@climateinteractive/docs-builder": "workspace:*"
+    "@climateinteractive/docs-builder": "workspace:*",
+    "puppeteer": "^25.10.0"
   }
 }
