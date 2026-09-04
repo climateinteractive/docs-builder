@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.4.5...docs-builder-v1.5.0) (2026-09-04)
+
+
+### Features
+
+* make library ESM only + use tsup to bundle library ([#140](https://github.com/climateinteractive/docs-builder/issues/140)) ([318804b](https://github.com/climateinteractive/docs-builder/commit/318804b40aa04b7f38ed28c29c04d03b6f03577f)), closes [#138](https://github.com/climateinteractive/docs-builder/issues/138)
+
 ## [1.4.5](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.4.4...docs-builder-v1.4.5) (2026-09-04)
 
 
