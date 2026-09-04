@@ -1,4 +1,4 @@
-// Copyright (c) 2026 Climate Interactive / New Venture Fund. All rights reserved.
+// Copyright (c) 2026 Climate Interactive / New Venture Fund
 
 import { describe, expect, it } from 'vitest'
 
