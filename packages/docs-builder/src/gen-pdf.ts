@@ -7,6 +7,11 @@ import puppeteer from 'puppeteer'
 
 import type { Context } from './context'
 
+/**
+ * Generate a PDF file from the complete HTML page for the project.
+ *
+ * @param context The language-specific context.
+ */
 export async function writePdfFile(context: Context): Promise<void> {
   // Launch a headless browser instance
   const browser = await puppeteer.launch({ headless: true })
