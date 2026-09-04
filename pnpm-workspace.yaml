@@ -4,7 +4,6 @@ packages:
 
 # Allow certain packages to run postinstall scripts
 onlyBuiltDependencies:
-  - esbuild
   - puppeteer
 
 # Prevent pnpm from automatically installing unresolved peer dependencies

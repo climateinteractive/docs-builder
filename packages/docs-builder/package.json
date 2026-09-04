@@ -32,8 +32,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ci": "vitest run",
-    "build": "tsup-node",
-    "watch": "tsup-node --watch",
+    "build": "tsdown",
+    "watch": "tsdown --watch",
     "ci:build": "run-s clean lint prettier:check type-check test:ci build"
   },
   "dependencies": {

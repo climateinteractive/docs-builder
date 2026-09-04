@@ -12,7 +12,10 @@
     "noImplicitAny": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "moduleResolution": "node",
+    // Use "bundler" because the package is bundled with tsdown; this is also required
+    // in order to resolve dependencies (such as tsdown itself) that only declare their
+    // types under an `exports` field
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "types": ["node"],
     // We specify the top-level directory as the root, since TypeScript requires
