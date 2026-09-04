@@ -12,7 +12,7 @@ import {
   prepareOutDir,
   startDevServer,
   writeOutputFile
-} from '../dist/index.js'
+} from '../dist/index.mjs'
 
 // TODO: For now assume the current directory is the root; need to make this configurable
 const rootDir = process.cwd()
