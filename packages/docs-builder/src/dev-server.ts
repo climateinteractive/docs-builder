@@ -14,41 +14,6 @@ import sirv from 'sirv'
  */
 export const reloadEventPath = '/__docs_builder_reload'
 
-/**
- * The script that is added to the `<head>` of each generated page when building in
- * development mode.
- *
- * The browser reconnects to an `EventSource` automatically if the connection is
- * dropped, so the page will reattach on its own if the dev server is restarted.
- */
-export const devReloadScriptTag = `<script>
-  (function () {
-    var source = new EventSource('${reloadEventPath}')
-    source.onmessage = function () {
-      location.reload()
-    }
-  })()
-</script>`
-
-/**
- * Add the reload script to the given HTML page.
- *
- * The script is inserted just before the closing `body` tag, which is where a page
- * expects trailing scripts to appear.  If the content does not contain a closing
- * `body` tag, the script is appended instead.
- *
- * @param html The HTML content of the page.
- * @returns The HTML content with the reload script included.
- */
-export function injectDevReloadScript(html: string): string {
-  const closingTag = '</body>'
-  const index = html.lastIndexOf(closingTag)
-  if (index < 0) {
-    return `${html}\n${devReloadScriptTag}\n`
-  }
-  return `${html.slice(0, index)}${devReloadScriptTag}\n${html.slice(index)}`
-}
-
 /** The default number of ports that are tried before giving up. */
 const defaultMaxPortAttempts = 10
 
@@ -57,46 +22,6 @@ const loopbackAddresses = ['127.0.0.1', '::1']
 
 /** The number of milliseconds to wait for a connection when checking a port. */
 const portProbeTimeout = 500
-
-/**
- * Return whether a server accepts a connection on the given address and port.
- *
- * @param host The address to connect to.
- * @param port The port to connect to.
- * @returns A promise that is resolved with true if the connection was accepted.
- */
-function canConnect(host: string, port: number): Promise<boolean> {
-  return new Promise(resolve => {
-    const socket = connect({ host, port })
-    function finish(connected: boolean): void {
-      socket.destroy()
-      resolve(connected)
-    }
-    socket.setTimeout(portProbeTimeout)
-    socket.on('connect', () => finish(true))
-    // A connection that neither succeeds nor is refused means the port is not usable
-    // for a local dev server either way
-    socket.on('timeout', () => finish(true))
-    socket.on('error', () => finish(false))
-  })
-}
-
-/**
- * Return whether a server is already listening on the given port.
- *
- * Attempting to listen is not enough on its own.  On macOS, a server that is bound to a
- * single address (for example, another dev server on `0.0.0.0`) does not prevent this
- * server from binding the same port on a different address, so both end up running and
- * the browser reaches whichever one `localhost` happens to resolve to.  Connecting to
- * the loopback addresses catches that case.
- *
- * @param port The port to check.
- * @returns A promise that is resolved with true if the port is already being used.
- */
-async function isPortInUse(port: number): Promise<boolean> {
-  const results = await Promise.all(loopbackAddresses.map(host => canConnect(host, port)))
-  return results.some(inUse => inUse)
-}
 
 /** The options for starting the local development server. */
 export interface DevServerOptions {
@@ -283,4 +208,79 @@ export async function startDevServer(options: DevServerOptions): Promise<DevServ
     await watcher.close()
     throw error
   }
+}
+
+/**
+ * The script that is added to the `<head>` of each generated page when building in
+ * development mode.
+ *
+ * The browser reconnects to an `EventSource` automatically if the connection is
+ * dropped, so the page will reattach on its own if the dev server is restarted.
+ */
+export const devReloadScriptTag = `<script>
+  (function () {
+    var source = new EventSource('${reloadEventPath}')
+    source.onmessage = function () {
+      location.reload()
+    }
+  })()
+</script>`
+
+/**
+ * Add the reload script to the given HTML page.
+ *
+ * The script is inserted just before the closing `body` tag, which is where a page
+ * expects trailing scripts to appear.  If the content does not contain a closing
+ * `body` tag, the script is appended instead.
+ *
+ * @param html The HTML content of the page.
+ * @returns The HTML content with the reload script included.
+ */
+export function injectDevReloadScript(html: string): string {
+  const closingTag = '</body>'
+  const index = html.lastIndexOf(closingTag)
+  if (index < 0) {
+    return `${html}\n${devReloadScriptTag}\n`
+  }
+  return `${html.slice(0, index)}${devReloadScriptTag}\n${html.slice(index)}`
+}
+
+/**
+ * Return whether a server accepts a connection on the given address and port.
+ *
+ * @param host The address to connect to.
+ * @param port The port to connect to.
+ * @returns A promise that is resolved with true if the connection was accepted.
+ */
+function canConnect(host: string, port: number): Promise<boolean> {
+  return new Promise(resolve => {
+    const socket = connect({ host, port })
+    function finish(connected: boolean): void {
+      socket.destroy()
+      resolve(connected)
+    }
+    socket.setTimeout(portProbeTimeout)
+    socket.on('connect', () => finish(true))
+    // A connection that neither succeeds nor is refused means the port is not usable
+    // for a local dev server either way
+    socket.on('timeout', () => finish(true))
+    socket.on('error', () => finish(false))
+  })
+}
+
+/**
+ * Return whether a server is already listening on the given port.
+ *
+ * Attempting to listen is not enough on its own.  On macOS, a server that is bound to a
+ * single address (for example, another dev server on `0.0.0.0`) does not prevent this
+ * server from binding the same port on a different address, so both end up running and
+ * the browser reaches whichever one `localhost` happens to resolve to.  Connecting to
+ * the loopback addresses catches that case.
+ *
+ * @param port The port to check.
+ * @returns A promise that is resolved with true if the port is already being used.
+ */
+async function isPortInUse(port: number): Promise<boolean> {
+  const results = await Promise.all(loopbackAddresses.map(host => canConnect(host, port)))
+  return results.some(inUse => inUse)
 }
