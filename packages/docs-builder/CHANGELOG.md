@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.4.5](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.4.4...docs-builder-v1.4.5) (2026-09-04)
+
+
+### Bug Fixes
+
+* replace live-server dependency with custom local dev server ([#131](https://github.com/climateinteractive/docs-builder/issues/131)) ([ee69bfb](https://github.com/climateinteractive/docs-builder/commit/ee69bfb994a6d34874f47a2bd85029702dc67005)), closes [#126](https://github.com/climateinteractive/docs-builder/issues/126)
+* run only one build at a time when watching for changes in dev mode ([#129](https://github.com/climateinteractive/docs-builder/issues/129)) ([70a32f3](https://github.com/climateinteractive/docs-builder/commit/70a32f3c68b3f7672752a3a6963a410a3696307e)), closes [#127](https://github.com/climateinteractive/docs-builder/issues/127)
+
+
+### Dependencies
+
+* make puppeteer a peer dependency ([#135](https://github.com/climateinteractive/docs-builder/issues/135)) ([e1f2b38](https://github.com/climateinteractive/docs-builder/commit/e1f2b3809cdb22f32b3eb69635f2f5a1bb860694)), closes [#134](https://github.com/climateinteractive/docs-builder/issues/134)
+* upgrade puppeteer to 25.x ([#133](https://github.com/climateinteractive/docs-builder/issues/133)) ([7d22570](https://github.com/climateinteractive/docs-builder/commit/7d225701bd07641f6f2f808d90d522a384bf24bf)), closes [#132](https://github.com/climateinteractive/docs-builder/issues/132)
+
 ## [1.4.4](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.4.3...docs-builder-v1.4.4) (2026-07-01)
 
 
