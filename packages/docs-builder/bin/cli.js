@@ -6,7 +6,13 @@ import path from 'node:path'
 import chokidar from 'chokidar'
 import open from 'open'
 
-import { buildDocs, prepareOutDir, startDevServer, writeOutputFile } from '../dist/index.js'
+import {
+  buildDocs,
+  createBuildQueue,
+  prepareOutDir,
+  startDevServer,
+  writeOutputFile
+} from '../dist/index.js'
 
 // TODO: For now assume the current directory is the root; need to make this configurable
 const rootDir = process.cwd()
@@ -85,23 +91,35 @@ function watch() {
   const delay = 100
   const changedPaths = new Set()
 
-  function performRebuild() {
-    console.log('')
-    for (const path of changedPaths) {
-      console.log(`File ${path} has been changed`)
+  // Run one build at a time.  Each build removes and recreates the output directories,
+  // so a build that starts while another one is still running deletes the files that
+  // the first one is writing.  Changes that arrive during a build are picked up by the
+  // build that follows it.
+  const buildQueue = createBuildQueue(
+    () => {
+      console.log('')
+      for (const path of changedPaths) {
+        console.log(`File ${path} has been changed`)
+      }
+      console.log(`Changes detected in ${changedPaths.size} sources, rebuilding...`)
+
+      // Clear the set of pending files
+      changedPaths.clear()
+
+      // Restart the build processes
+      console.log('Starting builder processes')
+      return build({
+        mode: 'development',
+        initial: false
+      })
+    },
+    error => {
+      // Keep watching after a failed build so that the dev server does not have to be
+      // restarted once the cause is fixed
+      console.error('ERROR: Failed to rebuild the docs:')
+      console.error(error)
     }
-    console.log(`Changes detected in ${changedPaths.size} sources, rebuilding...`)
-
-    // Clear the set of pending files
-    changedPaths.clear()
-
-    // Restart the build processes
-    console.log('Starting builder processes')
-    build({
-      mode: 'development',
-      initial: false
-    })
-  }
+  )
 
   function scheduleRebuild(changedPath) {
     // Only schedule the build if the set is currently empty
@@ -113,7 +131,7 @@ function watch() {
     if (schedule) {
       // Schedule the build to start after a delay
       setTimeout(() => {
-        performRebuild()
+        buildQueue.request()
       }, delay)
     }
   }

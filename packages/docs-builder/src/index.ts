@@ -2,6 +2,8 @@
 
 export type { BuildOptions } from './build'
 export { buildDocs } from './build'
+export type { BuildQueue } from './build-queue'
+export { createBuildQueue } from './build-queue'
 export type { BuildMode } from './config'
 export type { DevServer, DevServerOptions } from './dev-server'
 export { startDevServer } from './dev-server'
