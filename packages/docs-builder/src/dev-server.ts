@@ -1,9 +1,9 @@
 // Copyright (c) 2026 Climate Interactive / New Venture Fund
 
-import type { Server, ServerResponse } from 'http'
-import { createServer } from 'http'
-import { connect } from 'net'
-import { resolve as resolvePath } from 'path'
+import type { Server, ServerResponse } from 'node:http'
+import { createServer } from 'node:http'
+import { connect } from 'node:net'
+import { resolve as resolvePath } from 'node:path'
 
 import chokidar from 'chokidar'
 import sirv from 'sirv'
