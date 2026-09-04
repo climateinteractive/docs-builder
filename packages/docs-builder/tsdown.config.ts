@@ -10,9 +10,5 @@ export default defineConfig({
   // declaration files, but the map files themselves are only emitted when this is set
   dts: { sourcemap: true },
   sourcemap: true,
-  clean: true,
-  // Keep the plain `.js` and `.d.ts` extensions for the ESM output (tsdown defaults to
-  // `.mjs` and `.d.mts`); this package is already `"type": "module"`, so the explicit
-  // extensions are redundant, and this avoids changing the published file names
-  outExtensions: () => ({ js: '.js', dts: '.d.ts' })
+  clean: true
 })
