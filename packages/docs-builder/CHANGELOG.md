@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.5.0...docs-builder-v1.5.1) (2026-09-16)
+
+
+### Bug Fixes
+
+* ignore comments that do not contain a known command ([#145](https://github.com/climateinteractive/docs-builder/issues/145)) ([cc1453b](https://github.com/climateinteractive/docs-builder/commit/cc1453baa898a59b0877b69f957d01ed727b7ecf)), closes [#144](https://github.com/climateinteractive/docs-builder/issues/144)
+
 ## [1.5.0](https://github.com/climateinteractive/docs-builder/compare/docs-builder-v1.4.5...docs-builder-v1.5.0) (2026-09-04)
 
 
