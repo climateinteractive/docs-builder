@@ -54,6 +54,7 @@ For example, to build only `packages/docs-builder`, run `pnpm -F docs-builder bu
 - Before you commit your changes, make sure tests are passing and type-check / lint / prettier checks are clean.
 - Never include a GitHub issue number (e.g., `#123`) in commit messages (for example, do not include a `(#123)` suffix); this will just pollute the GitHub issue with unnecessary links.
 - Never include a "Co-Authored-By: Claude" line in commit messages.
+- Never include a "Claude-Session" (with session URL) line in commit messages.
 
 ### Language Conventions
 
