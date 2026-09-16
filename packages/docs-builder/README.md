@@ -155,6 +155,15 @@ This block has two paragraphs that are captured using a
 <!-- end-def -->
 ```
 
+Only comments that use one of the command names listed above are treated as commands;
+any other comment is left alone and passed through to the generated output. This means
+that a page can include normal comments as well as directives that are intended for
+other tools, for example:
+
+```md
+<!-- cSpell:disable -->
+```
+
 TODO: Add more documentation about custom commands. For the time being, refer
 to the examples on
 [this page](../../examples/sample-docs/projects/sample-guide/content/page_1.md)
