@@ -6,6 +6,7 @@ import { marked } from 'marked'
 
 import type { BlockId } from './block'
 import type { Command } from './command'
+import { isKnownCommandKind } from './command'
 import type { Context } from './context'
 import { readTextFile } from './fs'
 import type { MarkdownPage } from './types'
@@ -149,8 +150,16 @@ function processTokens(context: Context, state: ProcessState, tokens: marked.Tok
 }
 
 /**
- * Parse the given `html` token and if it contains a command, return it, otherwise
+ * Parse the given `html` token and if it contains a known command, return it, otherwise
  * return undefined.
+ *
+ * A comment is only treated as a command if it uses the exact command syntax and refers
+ * to one of the known commands.  Any other comment is ignored (and left in the output);
+ * this allows a page to include normal comments as well as directives that are intended
+ * for other tools, for example:
+ * ```
+ * <!-- cSpell:disable -->
+ * ```
  */
 function parseCommand(context: Context, token: marked.Token): Command | undefined {
   // def:<id>
@@ -173,51 +182,57 @@ function parseCommand(context: Context, token: marked.Token): Command | undefine
     return undefined
   }
 
-  // Note: the identifier is captured as a run of non-whitespace characters (rather
+  // Note: the comment must consist only of the command (the match is anchored at the
+  // start of the comment and the name must be followed by the end of the comment), so
+  // that a comment that only looks like a command (e.g. `<!-- cSpell:disable -->`) is
+  // ignored instead of being reported as an error.
+  // Note also: the identifier is captured as a run of non-whitespace characters (rather
   // than `\w+`) so that an id containing invalid characters (e.g. `%`) is still
   // captured here and caught by the validation below, instead of causing the whole
   // match to fail and the command to be silently ignored
-  const m = raw.match(/<!--\s*([a-z-]+)(\[hidden\])?:?(\S+)?\s*-->/)
+  const m = raw.match(/^<!--\s*([a-z][a-z-]*)(\[hidden\])?(?::(\S*))?\s*-->/)
   if (!m) {
     return undefined
   }
 
-  if (m[3]) {
-    if (!m[3].match(/^[a-z0-9]+(?:_+[a-z0-9]+)*$/)) {
+  // Ignore the comment if it doesn't refer to one of the known commands
+  const kind = m[1]
+  if (!isKnownCommandKind(kind)) {
+    return undefined
+  }
+
+  // Validate the identifier; note that `end-def` is the only command that doesn't
+  // take an identifier
+  const id = m[3]
+  if (id) {
+    if (!id.match(/^[a-z0-9]+(?:_+[a-z0-9]+)*$/)) {
       throw new Error(
         context.getScopedMessage(
-          `Identifier (${m[3]}) must contain only lowercase letters, digits, and underscores`
+          `Identifier (${id}) must contain only lowercase letters, digits, and underscores`
         )
       )
     }
+  } else if (kind !== 'end-def') {
+    throw new Error(context.getScopedMessage(`Command '${kind}' requires an identifier`))
   }
 
-  const rawKind = m[1]
-  switch (rawKind) {
+  switch (kind) {
     case 'def':
-    case 'begin-def': {
-      const idPart = m[3]
-      const id = idPart
+    case 'begin-def':
       return {
-        kind: rawKind,
+        kind,
         id,
         hidden: m[2] === '[hidden]'
       }
-    }
     case 'end-def':
       return {
-        kind: rawKind
+        kind
       }
-    case 'section': {
-      const idPart = m[3]
-      const id = idPart
+    case 'section':
       return {
-        kind: rawKind,
+        kind,
         id
       }
-    }
-    default:
-      throw new Error(context.getScopedMessage(`Unknown command '${rawKind}'`))
   }
 }
 
