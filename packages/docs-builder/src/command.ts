@@ -41,7 +41,7 @@ const knownCommandKinds: readonly string[] = ['def', 'begin-def', 'end-def', 'se
  * parser.
  *
  * @param name The command name, as it appears in an HTML comment.
- * @returns True if the name refers to a known command, false otherwise.
+ * @returns true if the name refers to a known command, false otherwise.
  */
 export function isKnownCommandKind(name: string): name is CommandKind {
   return knownCommandKinds.includes(name)
